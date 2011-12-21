@@ -1,12 +1,11 @@
 module Main where
 
 import Curses
-import Hello
+import Draw
 
 import System.IO
 import System.Locale.SetLocale
 
 main :: IO ()
 main = do
-  locale <- setLocale LC_ALL (Just "en_US.UTF-8")
-  runMain helloWorld
+  setLocale LC_ALL (Just "en_US.UTF-8") >> runMain draw

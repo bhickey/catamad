@@ -16,6 +16,10 @@ data Canvas = Canvas
   , canvasData :: Vector Char
   }
 
+contains :: Canvas -> Point -> Bool
+contains (Canvas _ (Box (xm, ym)) _) (Point (x,y)) =
+  (x >= 0 && x < xm && y >= 0 && y < ym)
+
 makeCanvas :: Point -> Box -> Char -> Canvas
 makeCanvas p b c = Canvas
   p b (V.replicate (B.size b) c)
