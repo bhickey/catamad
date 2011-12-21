@@ -16,14 +16,11 @@ draw = do
 draw_loop :: Canvas -> Cursor -> IO ()
 draw_loop cv cr = do 
   let (t,b) = splitRow'  6 cv
-      (l,r) = splitCol' 40 t
-      l' = paint l charGrid
-      r' = overwrite r 'R'
-      b' = overwrite b 'B' in
-    printCanvas l' >>
-    printCanvas r' >>
-    printCanvas b' >>
-    writeTo l' cr >>
+      (l,r) = splitCol' 40 t in
+    printCanvas l charGrid >>
+    printCanvas r (\ _ -> 'R') >>
+    printCanvas b (\ _ -> 'B') >>
+    writeTo l cr >>
     refresh >> update >>
     do maybeCr <- (handleChar l cr) 
        case maybeCr of

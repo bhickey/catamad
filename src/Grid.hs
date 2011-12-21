@@ -8,6 +8,7 @@ import Point
 
 import Prelude hiding (lookup)
 import Data.Map
+import UI.HSCurses.Curses
 
 data Grid a = Grid
   { basis :: (Point -> a)

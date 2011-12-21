@@ -15,7 +15,7 @@ moveIn cv cr dir =
     else cr
 
 writeTo :: Canvas -> Cursor -> IO ()
-writeTo (Canvas off bx _) cr = do
+writeTo (Canvas off bx) cr = do
   let Point (x,y) = cr + off in
     mvAddCh y x (toEnum.fromEnum $ '@')
 
