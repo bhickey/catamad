@@ -1,0 +1,21 @@
+Name:             catamad
+Version:          0.1
+Cabal-Version:    >= 1.2
+License:          GPL-2
+License-File:     LICENSE
+Author:           Brendan Hickey
+Copyright:        (c) 2011 Brendan Hickey
+Maintainer:       brendan@bhickey.net
+Stability:        Experimental
+Category:         Game
+Synopsis:         The Catacombs of Madness
+Build-Type:       Simple
+
+Executable catamad
+  Build-Depends:  base,
+                  containers >= 0.4.0.0,
+                  vector >= 0.7.1,
+                  hscurses >= 1.4.1.0,
+                  setlocale >= 0.0.3
+  Main-Is:        Main.hs
+  Hs-Source-Dirs: src
