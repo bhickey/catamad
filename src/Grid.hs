@@ -1,7 +1,8 @@
 module Grid 
   (Grid
   , sample
-  , charGrid) 
+  , charGrid
+  , circularRoom) 
 where
 
 import Point
@@ -29,3 +30,13 @@ charGrid = sample $ Grid
       then Wall Stone
       else Floor Stone)
   empty
+
+circularRoom :: Point -> Terrain
+circularRoom = sample $ Grid
+  (\ p ->
+      if (withinRadius 10 (Point (15,15))) p
+      then Wall Stone
+      else Floor Stone)
+  empty
+  where withinRadius d p0 p1 =
+          euclideanDistance p0 p1 >= d

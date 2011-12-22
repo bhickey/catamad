@@ -1,5 +1,6 @@
 module Draw where
 
+import Box
 import Canvas
 import Point
 import Cursor
@@ -9,24 +10,34 @@ import Terrain
 import Data.Maybe
 import UI.HSCurses.Curses (refresh, update, getCh, Key(..))
 
+dungeon :: (Point -> Terrain)
+dungeon = circularRoom
+
 draw :: IO ()
 draw = do
-  draw_loop (Point (1,1))
+  draw_loop Nothing
 
-draw_loop :: Cursor -> IO ()
-draw_loop cr = do 
+draw_loop :: Maybe Cursor -> IO ()
+draw_loop Nothing = do
+  (Canvas _ bx) <- stdCanvas
+  draw_loop (Just $! Point (15,15))
+
+draw_loop (Just cr) = do 
   cv <- stdCanvas
   let (t,b) = splitRow'  6 cv
-      (l,r) = splitCol' 40 t in
-    printCanvas l (\ p -> renderTile (charGrid p)) >>
+      (l@(Canvas _ bx),r) = splitCol' 40 t 
+      lCenter = center bx
+      offset = applyOffset (cr - lCenter) in
+    printCanvas l (\ p -> renderTile (dungeon $! offset p)) >>
     printCanvas r (\ _ -> 'R') >>
     printCanvas b (\ _ -> 'B') >>
-    writeTo l cr >>
+    writeTo l lCenter >>
     refresh >> update >>
     do maybeCr <- (handleChar l cr) 
        case maybeCr of
          Nothing -> return ()
-         Just cr' -> draw_loop cr'
+         _ -> draw_loop maybeCr
+  where applyOffset p1 p2 = p1 + p2
        
 handleChar :: Canvas -> Cursor -> IO (Maybe Cursor)
 handleChar cv cr = do
@@ -42,9 +53,9 @@ handleChar cv cr = do
     KeyChar 'h' -> (mv West)
     KeyChar 'y' -> (mv NorthWest)
     _ -> handleChar cv cr
-  where mv d = let cr' = moveIn cv cr d in
-                 if traversable $ charGrid cr' 
-                 then return $ Just cr'
-                 else return $ Just cr
+  where mv d = let cr' = move cr d in
+                 if traversable $! dungeon cr' 
+                 then return $! Just cr'
+                 else return $! Just cr
                 
  
