@@ -5,6 +5,7 @@ module Grid
 where
 
 import Point
+import Terrain
 
 import Prelude hiding (lookup)
 import Data.Map
@@ -21,10 +22,10 @@ sample (Grid b o) pos =
     Just a -> a
     Nothing -> b pos
 
-charGrid :: Point -> Char
+charGrid :: Point -> Terrain
 charGrid = sample $ Grid
   (\ (Point (x,y)) ->
       if (x `mod` 5 == 0 && y `mod` 5 == 0)
-      then '#'
-      else '.')
+      then Wall Stone
+      else Floor Stone)
   empty

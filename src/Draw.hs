@@ -5,6 +5,7 @@ import Point
 import Cursor
 import Grid
 import Direction
+import Terrain
 import Data.Maybe
 import UI.HSCurses.Curses (refresh, update, getCh, Key(..))
 
@@ -17,7 +18,7 @@ draw_loop :: Canvas -> Cursor -> IO ()
 draw_loop cv cr = do 
   let (t,b) = splitRow'  6 cv
       (l,r) = splitCol' 40 t in
-    printCanvas l charGrid >>
+    printCanvas l (\ p -> renderTile (charGrid p)) >>
     printCanvas r (\ _ -> 'R') >>
     printCanvas b (\ _ -> 'B') >>
     writeTo l cr >>
@@ -41,5 +42,9 @@ handleChar cv cr = do
     KeyChar 'h' -> (mv West)
     KeyChar 'y' -> (mv NorthWest)
     _ -> handleChar cv cr
-  where mv d = return $ Just $ moveIn cv cr d
+  where mv d = let cr' = moveIn cv cr d in
+                 if traversable $ charGrid cr' 
+                 then return $ Just cr'
+                 else return $ Just cr
+                
  
