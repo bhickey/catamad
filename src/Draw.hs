@@ -11,11 +11,11 @@ import UI.HSCurses.Curses (refresh, update, getCh, Key(..))
 
 draw :: IO ()
 draw = do
-  cv <- stdCanvas
-  draw_loop cv (Point (0,0))
+  draw_loop (Point (1,1))
 
-draw_loop :: Canvas -> Cursor -> IO ()
-draw_loop cv cr = do 
+draw_loop :: Cursor -> IO ()
+draw_loop cr = do 
+  cv <- stdCanvas
   let (t,b) = splitRow'  6 cv
       (l,r) = splitCol' 40 t in
     printCanvas l (\ p -> renderTile (charGrid p)) >>
@@ -26,7 +26,7 @@ draw_loop cv cr = do
     do maybeCr <- (handleChar l cr) 
        case maybeCr of
          Nothing -> return ()
-         Just cr' -> draw_loop cv cr'
+         Just cr' -> draw_loop cr'
        
 handleChar :: Canvas -> Cursor -> IO (Maybe Cursor)
 handleChar cv cr = do
