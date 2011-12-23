@@ -8,8 +8,8 @@ instance Num Point where
   fromInteger 0 = Point (0,0)
   fromInteger x' = 
     let x = fromIntegral x'
-        r = (floor ((sqrt.fromIntegral) x) + 1) `div` 2 
-        ring_start = (2 * r - 1)^2
+        r = ((floor (((sqrt.fromIntegral) x)::Double)) + 1) `div` 2 
+        ring_start = (2 * r - 1)^(2::Int)
         top_bnd = ring_start + (2 * r + 1)
         rgt_bnd = ring_start + (4 * r + 1)
         bot_bnd = ring_start + (6 * r + 1)
@@ -43,7 +43,7 @@ instance Integral Point where
     let x' = fromIntegral x
         y' = fromIntegral y
         ring = max (abs x') (abs y')
-        off = (2 * ring - 1)^2 in
+        off = (2 * ring - 1)^(2::Int) in
       if ring == y'
       then x' + ring + off
       else if ring == (abs y')

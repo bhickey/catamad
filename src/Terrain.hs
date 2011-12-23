@@ -24,3 +24,4 @@ traversable :: Terrain -> Bool
 traversable (Wall _) = False
 traversable (Pillar _) = False
 traversable (Floor _) = True
+traversable (Door _ _) = True
