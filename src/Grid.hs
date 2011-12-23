@@ -1,16 +1,16 @@
 module Grid 
-  (Grid
+  (Grid(..)
   , sample
   , charGrid
   , circularRoom) 
 where
 
 import Point
+import Point.Metric
 import Terrain
 
 import Prelude hiding (lookup)
 import Data.Map
-import UI.HSCurses.Curses
 
 data Grid a = Grid
   { basis :: (Point -> a)
@@ -39,4 +39,4 @@ circularRoom = sample $ Grid
       else Floor Stone)
   empty
   where withinRadius d p0 p1 =
-          euclideanDistance p0 p1 >= d
+          chessDistance p0 p1 >= d

@@ -1,14 +1,11 @@
 module Canvas where
 
 import Box
-import qualified Box as B
 import Point
 
 import Control.Monad
 
-import UI.HSCurses.Curses (Color, mvAddCh, scrSize)
-import Data.Vector (Vector, (//), (!))
-import qualified Data.Vector as V
+import UI.HSCurses.Curses (mvAddCh, scrSize)
 
 data Canvas = Canvas
   { canvasOffset :: Point
@@ -38,13 +35,11 @@ splitCol' :: Int -> Canvas -> (Canvas, Canvas)
 splitCol' c cv@(Canvas _ (Box (x, _))) = splitCol (x - c) cv
    
 printCanvas :: (Enum a) => Canvas -> (Point -> a) -> IO ()
-printCanvas (Canvas off b@(Box (cols,_))) pfn = void $
+printCanvas (Canvas off b) pfn = void $
   mapM 
   (\ pt -> do printCh (pt + off) (cast $ pfn pt))
   (indices b)
-  where index2y ind = ind `div` cols
-        index2x ind = ind `mod` cols
-        printCh (Point (x,y)) a = mvAddCh y x a
+  where printCh (Point (x,y)) a = mvAddCh y x a
 
 stdCanvas :: IO Canvas
 stdCanvas = do

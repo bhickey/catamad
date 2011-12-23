@@ -3,11 +3,11 @@ module Draw where
 import Box
 import Canvas
 import Point
+import Point.Metric
 import Cursor
 import Grid
 import Direction
 import Terrain
-import Data.Maybe
 import UI.HSCurses.Curses (refresh, update, getCh, Key(..))
 
 dungeon :: (Point -> Terrain)
@@ -19,7 +19,6 @@ draw = do
 
 draw_loop :: Maybe Cursor -> IO ()
 draw_loop Nothing = do
-  (Canvas _ bx) <- stdCanvas
   draw_loop (Just $! Point (15,15))
 
 draw_loop (Just cr) = do 
@@ -28,7 +27,9 @@ draw_loop (Just cr) = do
       (l@(Canvas _ bx),r) = splitCol' 40 t 
       lCenter = center bx
       offset = applyOffset (cr - lCenter) in
-    printCanvas l (\ p -> renderTile (dungeon $! offset p)) >>
+    printCanvas l (\ p -> if within (offset p)
+                          then renderTile (dungeon $! offset p)
+                          else ' ') >>
     printCanvas r (\ _ -> 'R') >>
     printCanvas b (\ _ -> 'B') >>
     writeTo l lCenter >>
@@ -38,6 +39,7 @@ draw_loop (Just cr) = do
          Nothing -> return ()
          _ -> draw_loop maybeCr
   where applyOffset p1 p2 = p1 + p2
+        within p2 = euclideanDistance cr p2 < 7
        
 handleChar :: Canvas -> Cursor -> IO (Maybe Cursor)
 handleChar cv cr = do

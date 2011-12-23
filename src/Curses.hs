@@ -21,7 +21,7 @@ runMain main = do
     C.initCurses
     C.keypad C.stdScr True
     C.echo False
-    C.cursSet C.CursorInvisible
+    _ <- C.cursSet C.CursorInvisible
     C.cBreak True
     main
     C.endWin

@@ -8,7 +8,7 @@ size :: Box -> Int
 size (Box (x,y)) = (x * y)
 
 toIndex :: Box -> Point -> Int
-toIndex (Box (xm,ym)) (Point (x,y)) = (x + y * xm)
+toIndex (Box (xm,_)) (Point (x,y)) = (x + y * xm)
 
 toPoint :: Box -> Int -> Point
 toPoint (Box (xm,_)) ind = Point (ind `mod` xm, ind `div` xm)
@@ -18,4 +18,4 @@ indices (Box (x,y)) = [Point (x',y') | x' <- [0..x], y' <- [0..y]]
 
 center :: Box -> Point
 center (Box (x,y)) = Point (div2 x, div2 y)
-  where div2 a = round $ fromIntegral a / 2.0 + 0.5
+  where div2 a = round $ fromIntegral a / 2.0 + (0.5::Double)
