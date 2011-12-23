@@ -1,8 +1,7 @@
 module Grid 
   (Grid(..)
   , sample
-  , charGrid
-  , circularRoom) 
+  , pillarRoom) 
 where
 
 import Point
@@ -23,11 +22,19 @@ sample (Grid b o) pos =
     Just a -> a
     Nothing -> b pos
 
-charGrid :: Point -> Terrain
-charGrid = sample $ Grid
+
+pillarRoom :: Point -> Terrain
+pillarRoom p =
+  let t = circularRoom p in
+    case t of
+      Floor _ -> pillarGrid p
+      _ -> t
+
+pillarGrid :: Point -> Terrain
+pillarGrid = sample $ Grid
   (\ (Point (x,y)) ->
-      if (x `mod` 5 == 0 && y `mod` 5 == 0)
-      then Wall Stone
+      if (x `mod` 6 == 0 && y `mod` 4 == 0)
+      then Pillar Stone
       else Floor Stone)
   empty
 

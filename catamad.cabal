@@ -20,4 +20,5 @@ Executable catamad
   Main-Is:        Main.hs
   GHC-Options:    -Wall 
                   -Werror
+                  -O3
   Hs-Source-Dirs: src
