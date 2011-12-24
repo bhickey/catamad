@@ -11,7 +11,7 @@ import Terrain
 import UI.HSCurses.Curses (refresh, update, getCh, Key(..))
 
 dungeon :: (Point -> Terrain)
-dungeon = pillarRoom
+dungeon = cavern
 
 draw :: IO ()
 draw = do
