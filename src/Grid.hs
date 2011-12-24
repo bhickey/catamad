@@ -1,7 +1,4 @@
 module Grid 
-  (Grid(..)
-  , sample
-  , pillarRoom) 
 where
 
 import Point
@@ -22,6 +19,17 @@ sample (Grid b o) pos =
     Just a -> a
     Nothing -> b pos
 
+
+cavern :: Point -> Terrain
+cavern p = 
+  if (euclideanDistance zeroPoint p)^(2::Int) < ((abs spin) `mod` 1337)
+  then pillarGrid p
+  else Wall Stone
+  where g = ((fromIntegral.toInteger) p)
+        spin = 2891336453 * (g + 947)
+             + 29943829 * (g + 3613)
+             + 32310901 * (g + 7949)
+  
 
 pillarRoom :: Point -> Terrain
 pillarRoom p =

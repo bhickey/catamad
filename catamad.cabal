@@ -14,9 +14,10 @@ Build-Type:       Simple
 Executable catamad
   Build-Depends:  base,
                   containers >= 0.4.0.0,
-                  vector >= 0.7.1,
                   hscurses >= 1.4.1.0,
-                  setlocale >= 0.0.3
+                  random >= 1.0.0.3,
+                  setlocale >= 0.0.3,
+                  vector >= 0.7.1
   Main-Is:        Main.hs
   GHC-Options:    -Wall 
                   -Werror

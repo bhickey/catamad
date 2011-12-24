@@ -3,7 +3,7 @@ module Draw where
 import Box
 import Canvas
 import Point
-import Point.Metric
+import FOV
 import Cursor
 import Grid
 import Direction
@@ -27,7 +27,7 @@ draw_loop (Just cr) = do
       (l@(Canvas _ bx),r) = splitCol' 40 t 
       lCenter = center bx
       offset = applyOffset (cr - lCenter) in
-    printCanvas l (\ p -> if within (offset p)
+    printCanvas l (\ p -> if isVisible cr dungeon (offset p)
                           then renderTile (dungeon $! offset p)
                           else ' ') >>
     printCanvas r (\ _ -> 'R') >>
@@ -39,7 +39,6 @@ draw_loop (Just cr) = do
          Nothing -> return ()
          _ -> draw_loop maybeCr
   where applyOffset p1 p2 = p1 + p2
-        within p2 = euclideanDistance cr p2 < 7
        
 handleChar :: Canvas -> Cursor -> IO (Maybe Cursor)
 handleChar cv cr = do
