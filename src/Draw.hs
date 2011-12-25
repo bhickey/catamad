@@ -22,26 +22,23 @@ draw_loop Nothing = do
   draw_loop (Just $! Point (15,15))
 
 draw_loop (Just cr) = do 
-  cv <- stdCanvas
-  let (t,b) = splitRow'  6 cv
-      (l@(Canvas _ bx),r) = splitCol' 40 t 
+  cv@(Canvas _ bx) <- stdCanvas
+  let 
       lCenter = center bx
       offset = applyOffset (cr - lCenter) in
-    printCanvas l (\ p -> if isVisible cr dungeon (offset p)
+    printCanvas cv (\ p -> if isVisible cr dungeon (offset p)
                           then renderTile (dungeon $! offset p)
                           else ' ') >>
-    printCanvas r (\ _ -> 'R') >>
-    printCanvas b (\ _ -> 'B') >>
-    writeTo l lCenter >>
+    writeTo cv lCenter >>
     refresh >> update >>
-    do maybeCr <- (handleChar l cr) 
+    do maybeCr <- (handleChar cr) 
        case maybeCr of
          Nothing -> return ()
          _ -> draw_loop maybeCr
   where applyOffset p1 p2 = p1 + p2
        
-handleChar :: Canvas -> Cursor -> IO (Maybe Cursor)
-handleChar cv cr = do
+handleChar :: Cursor -> IO (Maybe Cursor)
+handleChar cr = do
   keypress <- getCh
   case keypress of
     KeyChar 'q' -> return Nothing
@@ -53,7 +50,7 @@ handleChar cv cr = do
     KeyChar 'b' -> (mv SouthWest)
     KeyChar 'h' -> (mv West)
     KeyChar 'y' -> (mv NorthWest)
-    _ -> handleChar cv cr
+    _ -> handleChar cr
   where mv d = let cr' = move cr d in
                  if traversable $! dungeon cr' 
                  then return $! Just cr'
