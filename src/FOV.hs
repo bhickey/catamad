@@ -1,17 +1,27 @@
 module FOV where
 
+import Box
 import Point
 import Point.Metric
-import Terrain
+import Terrain        
+import Dungeon
+                                     
+import Types
 
-isVisible :: Point -> (Point -> Terrain) -> Point -> Bool
-isVisible center tfn pt =
-  let visible (Point (0,0)) = True
+import Data.Maybe
+
+doFov :: Turn -> Dungeon Terrain -> Box -> Point -> Dungeon Terrain
+doFov turn dungeon bx offset =
+  let viewFn pt = isJust (visible pt) && allowsVisibility (getFn pt)
+      getFn pt = (unconditionalGet dungeon (pt + offset))
+      visible p@(Point (0,0)) = Just $ getFn p
       visible p =
         if chessDistance p zeroPoint > 9
-        then False
-        else any (\ ip -> (visible ip) && (allowsVisibility $ tfn (ip + center))) (inwardPoints p) in
-    visible (pt - center)
+        then Nothing
+        else if any viewFn (inwardPoints p)
+             then Just $ getFn p 
+             else Nothing in
+    foldl (cache turn) dungeon [(i, fromJust $ visible i) | i <- indices bx, isJust $ visible i]
 
 inwardPoints :: Point -> [Point]
 inwardPoints p = 

@@ -16,6 +16,6 @@ toPoint (Box (xm,_)) ind = Point (ind `mod` xm, ind `div` xm)
 indices :: Box -> [Point]
 indices (Box (x,y)) = [Point (x',y') | x' <- [0..x], y' <- [0..y]]
 
-center :: Box -> Point
-center (Box (x,y)) = Point (div2 x, div2 y)
+centerPt :: Box -> Point
+centerPt (Box (x,y)) = Point (div2 x, div2 y)
   where div2 a = round $ fromIntegral a / 2.0 + (0.5::Double)
