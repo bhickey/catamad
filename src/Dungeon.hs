@@ -1,5 +1,4 @@
-module Grid 
-where
+module Dungeon where
 
 import Point
 import Point.Metric
