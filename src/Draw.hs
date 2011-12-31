@@ -5,7 +5,7 @@ import Canvas
 import Point
 import FOV
 import Cursor
-import Grid
+import Dungeon
 import Direction
 import Terrain
 import UI.HSCurses.Curses (refresh, update, getCh, Key(..))
