@@ -31,7 +31,6 @@ draw_loop t d (Just cr) = do
                              Nothing -> ' ') >>
     writeTo cv center >>
     print_string 0 0 (show cr) >>
-    print_string 0 1 (show center) >>
     refresh >> update >>
     do maybeCr <- (handleChar d' cr) 
        case maybeCr of

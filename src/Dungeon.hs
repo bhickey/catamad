@@ -29,10 +29,11 @@ cache t (Dungeon b c) (pt,e) =
 
 circularRoom :: Dungeon Terrain
 circularRoom = Dungeon
-  (\ p@(Point (x,_)) -> 
-    if euclideanDistance p zeroPoint < 6
-    then Floor Stone
-    else if x < 2 && x > -2
-         then Floor Stone
-         else Wall Bedrock)
+  (\ p@(Point (x,y)) -> 
+    let dist = euclideanDistance p zeroPoint in
+      if dist < 8
+      then Floor Stone
+      else if (x + y `mod` 3) < 2 && (x + y `mod` 3) > -2
+           then Floor Stone
+           else Wall (if dist > 100 then Bedrock else Stone))
   empty

@@ -1,4 +1,4 @@
-module FOV where
+module FOV (doFov) where
 
 import Box
 import Point
@@ -10,12 +10,15 @@ import Types
 
 import Data.Maybe
 
+viewRadius :: Int
+viewRadius = 6
+
 doFov :: Turn -> Dungeon Terrain -> Box -> Point -> Dungeon Terrain
 doFov trn d bx cursor =
   let getTerrain p = unconditionalGet d (p + cursor)
       visible (Point (0,0)) = Just (getTerrain zeroPoint)
       visible i = 
-        if chessDistance i zeroPoint < 9
+        if chessDistance i zeroPoint < viewRadius
         then if any (\ p -> (isJust.visible) p && (allowsVisibility.fromJust.visible) p) (inwardPoints i)
              then Just $ getTerrain i
              else Nothing
