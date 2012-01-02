@@ -5,7 +5,7 @@ import Point
 
 import Control.Monad
 
-import UI.HSCurses.Curses (mvAddCh, scrSize)
+import UI.HSCurses.Curses (mvAddCh, scrSize, mvWAddStr, stdScr)
 
 data Canvas = Canvas
   { canvasOffset :: Point
@@ -48,3 +48,15 @@ stdCanvas = do
 
 cast :: (Enum a, Enum b) => a -> b
 cast = toEnum . fromEnum
+
+print_string :: Int -> Int -> String -> IO ()
+print_string x y s = do
+  (ymax, xmax) <- scrSize
+  if y < 0 || y >= ymax || x >= xmax then return () else
+    let x' = max 0 x
+        s' = if x < 0 then drop (-x) s else s
+        s''= take (xmax - x) s' in
+      if y + 1 == ymax && x + length s'' == xmax
+      then mvWAddStr stdScr y x' (init s'') >>
+           mvAddCh y (xmax - 1) (cast $ last s'')
+      else mvWAddStr stdScr y x' s''
