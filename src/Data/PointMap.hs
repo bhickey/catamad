@@ -1,4 +1,6 @@
-module PointMap where
+module Data.PointMap where
+
+{-- Write some quickcheck tests this behaves oddly --}
 
 import Prelude hiding (map)
 
@@ -18,8 +20,8 @@ singleton k v = PointMap $ I.singleton (fromIntegral k) v
 null :: PointMap a -> Bool
 null = (I.null.intMap)
 
-lookup :: PointMap a -> Point -> Maybe a
-lookup (PointMap pm) p = I.lookup (fromIntegral p) pm
+lookup :: Point -> PointMap a -> Maybe a
+lookup p (PointMap pm) = I.lookup (fromIntegral p) pm
 
 delete :: Point -> PointMap a -> PointMap a
 delete k (PointMap p) = PointMap (I.delete (fromIntegral k) p)
