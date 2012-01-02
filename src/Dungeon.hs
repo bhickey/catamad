@@ -1,9 +1,7 @@
 module Dungeon (unconditionalGet, get, cache, circularRoom, Dungeon) where
 
 import Point
-import Point.Metric
 import Terrain
-
 import Types
 
 import Prelude hiding (lookup)
@@ -21,8 +19,8 @@ unconditionalGet d pt =
     Nothing -> (dungeonBasis d) pt
 
 get :: Dungeon a -> Point -> Maybe (a, Visibility)
-get (Dungeon _ c) pt =
-  lookup pt c
+get d pt =
+  lookup pt (dungeonCache d)
 
 cache :: Turn -> Dungeon a -> (Point, a) -> Dungeon a
 cache t (Dungeon b c) (pt,e) =
@@ -30,10 +28,10 @@ cache t (Dungeon b c) (pt,e) =
 
 circularRoom :: Dungeon Terrain
 circularRoom = Dungeon
-  (\ p ->
-      if (withinRadius 10 (Point (15,15))) p
-      then Wall Stone
-      else Floor Stone)
+  (\ (Point (x,y)) -> 
+    if x < 6 && x > -6 && y < 5 && y > -5
+    then Floor Stone
+    else if x < 2 && x > -2
+         then Floor Stone
+         else Wall Bedrock)
   empty
-  where withinRadius d p0 p1 =
-          chessDistance p0 p1 >= d

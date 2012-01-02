@@ -11,17 +11,16 @@ import Types
 import Data.Maybe
 
 doFov :: Turn -> Dungeon Terrain -> Box -> Point -> Dungeon Terrain
-doFov turn dungeon bx offset =
-  let viewFn pt = isJust (visible pt) && allowsVisibility (getFn pt)
-      getFn pt = (unconditionalGet dungeon (pt + offset))
-      visible p@(Point (0,0)) = Just $ getFn p
-      visible p =
-        if chessDistance p zeroPoint > 9
-        then Nothing
-        else if any viewFn (inwardPoints p)
-             then Just $ getFn p 
-             else Nothing in
-    foldl (cache turn) dungeon [(i, fromJust $ visible i) | i <- indices bx, isJust $ visible i]
+doFov trn d bx cursor =
+  let getTerrain p = unconditionalGet d (p + cursor)
+      visible (Point (0,0)) = Just (getTerrain zeroPoint)
+      visible i = 
+        if chessDistance i zeroPoint < 9
+        then if any (\ p -> (isJust.visible) p && (allowsVisibility.fromJust.visible) p) (inwardPoints i)
+             then Just $ getTerrain i
+             else Nothing
+        else Nothing in
+    foldl (cache trn) d [(i + cursor, (fromJust.visible) i) | i <- centerIndices bx, (isJust.visible) i]
 
 inwardPoints :: Point -> [Point]
 inwardPoints p = 

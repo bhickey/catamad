@@ -2,6 +2,7 @@ module Terrain where
 
 data Material =
     Stone
+  | Bedrock
 
 data Terrain =
     Wall Material

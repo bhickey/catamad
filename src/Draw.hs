@@ -8,37 +8,38 @@ import Cursor
 import Dungeon
 import Direction
 import Terrain
+import Types
 import UI.HSCurses.Curses (refresh, update, getCh, Key(..))
-
-dungeon :: (Point -> Terrain)
-dungeon = cavern
 
 draw :: IO ()
 draw = do
-  draw_loop Nothing
+  draw_loop firstTurn circularRoom Nothing
 
-draw_loop :: Maybe Cursor -> IO ()
-draw_loop Nothing = do
-  draw_loop (Just $! Point (15,15))
+draw_loop :: Turn -> Dungeon Terrain -> Maybe Cursor -> IO ()
+draw_loop t d Nothing = do
+  draw_loop t d (Just $! Point (0,0))
 
-draw_loop (Just cr) = do 
+draw_loop t d (Just cr) = do 
   cv@(Canvas _ bx) <- stdCanvas
-  let 
-      lCenter = center bx
-      offset = applyOffset (cr - lCenter) in
-    printCanvas cv (\ p -> if isVisible cr dungeon (offset p)
-                          then renderTile (dungeon $! offset p)
-                          else ' ') >>
-    writeTo cv lCenter >>
+  let center = centerPt bx
+      offset = cr - center
+      d' = doFov t d bx cr in
+    printCanvas cv (\ p -> case get d' (p + offset) of 
+                             Just (g, turn) -> if t == seenOn turn
+                                             then renderTile g
+                                             else ' '
+                             Nothing -> ' ') >>
+    writeTo cv center >>
+    print_string 0 0 (show cr) >>
+    print_string 0 1 (show center) >>
     refresh >> update >>
-    do maybeCr <- (handleChar cr) 
+    do maybeCr <- (handleChar d' cr) 
        case maybeCr of
          Nothing -> return ()
-         _ -> draw_loop maybeCr
-  where applyOffset p1 p2 = p1 + p2
+         _ -> draw_loop (nextTurn t) d' maybeCr
        
-handleChar :: Cursor -> IO (Maybe Cursor)
-handleChar cr = do
+handleChar :: Dungeon Terrain -> Cursor -> IO (Maybe Cursor)
+handleChar dungeon cr = do
   keypress <- getCh
   case keypress of
     KeyChar 'q' -> return Nothing
@@ -50,10 +51,8 @@ handleChar cr = do
     KeyChar 'b' -> (mv SouthWest)
     KeyChar 'h' -> (mv West)
     KeyChar 'y' -> (mv NorthWest)
-    _ -> handleChar cr
+    _ -> handleChar dungeon cr
   where mv d = let cr' = move cr d in
-                 if traversable $! dungeon cr' 
+                 if traversable $! (unconditionalGet dungeon cr' )
                  then return $! Just cr'
                  else return $! Just cr
-                
- 
