@@ -2,7 +2,10 @@ module Point where
 
 import Direction
 
-newtype Point = Point { point :: (Int, Int) } deriving (Show, Eq, Ord)
+newtype Point = Point { point :: (Int, Int) } deriving (Eq, Ord)
+
+instance Show Point where
+  show (Point (x,y)) = "(" ++ (show x) ++ "," ++ (show y) ++ ")"
 
 instance Num Point where
   fromInteger 0 = Point (0,0)

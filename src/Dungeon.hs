@@ -1,6 +1,7 @@
 module Dungeon (unconditionalGet, get, cache, circularRoom, Dungeon) where
 
 import Point
+import Point.Metric
 import Terrain
 import Types
 
@@ -28,8 +29,8 @@ cache t (Dungeon b c) (pt,e) =
 
 circularRoom :: Dungeon Terrain
 circularRoom = Dungeon
-  (\ (Point (x,y)) -> 
-    if x < 6 && x > -6 && y < 5 && y > -5
+  (\ p@(Point (x,_)) -> 
+    if euclideanDistance p zeroPoint < 6
     then Floor Stone
     else if x < 2 && x > -2
          then Floor Stone
