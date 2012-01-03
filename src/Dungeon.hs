@@ -3,7 +3,7 @@ module Dungeon (unconditionalGet, get, cache, circularRoom, Dungeon) where
 import Point
 import Point.Metric
 import Terrain
-import Types
+import Turn
 
 import Prelude hiding (lookup)
 import Data.Map

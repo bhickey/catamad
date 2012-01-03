@@ -4,7 +4,7 @@ import Cursor
 import PointMap
 import Dungeon
 import Terrain
-import Types
+import Turn
 import Mob.Monster
 
 data GameState = GameState

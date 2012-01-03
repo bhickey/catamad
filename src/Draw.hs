@@ -8,7 +8,7 @@ import Cursor
 import Dungeon
 import Direction
 import Terrain
-import Types
+import Turn
 import UI.HSCurses.Curses (refresh, update, getCh, Key(..))
 
 draw :: IO ()

@@ -1,4 +1,4 @@
-module Types (
+module Turn (
   Visibility (..)
   ,Turn
   ,firstTurn

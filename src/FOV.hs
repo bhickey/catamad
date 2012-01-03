@@ -6,7 +6,7 @@ import Point.Metric
 import Terrain        
 import Dungeon
                                      
-import Types
+import Turn
 
 import Data.Maybe
 
