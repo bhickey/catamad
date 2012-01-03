@@ -1,5 +1,6 @@
 dist
 cabal-dev
+Main
 *.o
 *.hi
 *.chi
