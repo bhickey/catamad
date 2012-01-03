@@ -31,9 +31,9 @@ circularRoom :: Dungeon Terrain
 circularRoom = Dungeon
   (\ p@(Point (x,y)) -> 
     let dist = euclideanDistance p zeroPoint in
-      if dist < 8
+      if dist < 8 || (dist > 13 && dist < 16)
       then Floor Stone
-      else if (x + y `mod` 3) < 2 && (x + y `mod` 3) > -2
+      else if x < 2 && x > -2 && y < 15 && y > -15
            then Floor Stone
            else Wall (if dist > 100 then Bedrock else Stone))
   empty
