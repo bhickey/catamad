@@ -1,7 +1,7 @@
 Name:             catamad
-Version:          0.1
+Version:          0.2
 Cabal-Version:    >= 1.2
-License:          GPL-2
+License:          GPL-3
 License-File:     LICENSE
 Author:           Brendan Hickey
 Copyright:        (c) 2011 Brendan Hickey
