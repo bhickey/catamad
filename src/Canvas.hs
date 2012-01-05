@@ -5,7 +5,7 @@ import Point
 
 import Control.Monad
 
-import UI.HSCurses.Curses (mvAddCh, scrSize, mvWAddStr, stdScr)
+import UI.HSCurses.Curses (mvAddCh, scrSize, mvWAddStr, stdScr, attrDimOn, attrDimOff, attrBoldOn, attrBoldOff)
 
 data Canvas = Canvas
   { canvasOffset :: Point
@@ -34,10 +34,17 @@ splitCol c (Canvas o@(Point (x_off, y_off)) (Box (x_lim, y_lim))) =
 splitCol' :: Int -> Canvas -> (Canvas, Canvas)
 splitCol' c cv@(Canvas _ (Box (x, _))) = splitCol (x - c) cv
    
-printCanvas :: (Enum a) => Canvas -> (Point -> a) -> IO ()
+printCanvas :: (Enum a, Eq a) => Canvas -> (Point -> (a,Bool)) -> IO ()
 printCanvas (Canvas off b) pfn = void $
   mapM 
-  (\ pt -> do printCh (pt + off) (cast $ pfn pt))
+  (\ pt -> 
+    let (ch,dim) = pfn pt
+        ch' = if ch == (cast '.') && dim then (cast ' ') else ch in
+      do unless dim attrBoldOn
+         when dim attrDimOn
+         printCh (pt + off) (cast $ ch')
+         when dim attrDimOff
+         unless dim attrBoldOff)
   (indices b)
   where printCh (Point (x,y)) a = mvAddCh y x a
 

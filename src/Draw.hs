@@ -25,10 +25,8 @@ draw_loop t d (Just cr) = do
       offset = cr - center
       d' = doFov t d bx cr in
     printCanvas cv (\ p -> case get d' (p + offset) of 
-                             Just (g, turn) -> if t == seenOn turn
-                                             then renderTile g
-                                             else ' '
-                             Nothing -> ' ') >>
+                             Just (g, turn) -> (renderTile g, t /= seenOn turn)
+                             Nothing -> (' ', True)) >>
     writeTo cv center >>
     print_string 0 0 (show cr) >>
     refresh >> update >>
