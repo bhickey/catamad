@@ -17,4 +17,4 @@ never = Never
 
 nextTurn :: Turn -> Turn
 nextTurn Never = Never
-nextTurn (Turn t) = Turn (t + 1)
+nextTurn (Turn t) = Turn (succ t)
