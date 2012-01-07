@@ -34,7 +34,7 @@ circularRoom = Dungeon
   (\ p@(Point (x,y)) -> 
     let dist = euclideanDistance p zeroPoint
         w = doMagic p in
-      if dist < 8 || (dist > 12 && dist < 17 - w)
+      if dist < 8 || (dist > 12 && dist < 20 - w)
       then Floor Stone
       else if x < 2 && x > -2 && y < 15 && y > -15
            then Floor Stone
