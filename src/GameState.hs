@@ -1,14 +1,23 @@
-module GameState (GameState(..)) where
+module GameState (LevelState(..), newState) where
 
-import Cursor
-import PointMap
 import Dungeon
-import Terrain
+import Monster
+import Point
 import Turn
-import Mob.Monster
+import Terrain
 
-data GameState = GameState
-  { player :: PointMap Monster
-  , monsters :: PointMap Monster
-  , dungeon :: Dungeon Terrain
-  , turn :: Turn }
+import Data.Map (Map)
+import qualified Data.Map as M
+
+data LevelState = LevelState
+  { levelPlayer :: (Point, Monster)
+  , levelMonsters :: Map Point Monster
+  , levelBasis :: Dungeon Terrain
+  , levelTurn :: Turn }
+
+newState :: LevelState
+newState = LevelState 
+  (zeroPoint, (Monster '@'))
+  (M.singleton (Point (0,3)) (Monster 'B'))
+  circularRoom
+  firstTurn

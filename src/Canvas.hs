@@ -38,13 +38,13 @@ printCanvas :: (Enum a, Eq a) => Canvas -> (Point -> (a,Bool)) -> IO ()
 printCanvas (Canvas off b) pfn = void $
   mapM 
   (\ pt -> 
-    let (ch,dim) = pfn pt
-        ch' = if ch == (cast '.') && dim then (cast ' ') else ch in
-      do unless dim attrBoldOn
-         when dim attrDimOn
+    let (ch,bright) = pfn pt
+        ch' = if ch == (cast '.') && (not bright) then (cast ' ') else ch in
+      do when bright attrBoldOn
+         unless bright attrDimOn
          printCh (pt + off) (cast $ ch')
-         when dim attrDimOff
-         unless dim attrBoldOff)
+         unless bright attrDimOff
+         when bright attrBoldOff)
   (indices b)
   where printCh (Point (x,y)) a = mvAddCh y x a
 

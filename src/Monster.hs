@@ -1,7 +1,11 @@
 {-# LANGUAGE ExistentialQuantification #-}
 module Monster where
 
-data Monster = forall a . Mob a => Monster a
+data Monster = Monster 
+  { sym :: Char }
+
+instance Mob Monster where
+  glyph (Monster s) = s
 
 class Mob a where
-  symbol :: a -> Char
+  glyph :: a -> Char
