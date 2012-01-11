@@ -2,12 +2,12 @@ module Terrain where
 
 data Material =
     Stone
-  | Bedrock
+  | Bedrock deriving (Eq, Ord)
 
 data Terrain =
-    Wall Material
-  | Floor Material
+    Floor Material
   | Pillar Material
+  | Wall Material deriving (Eq, Ord)
 
 renderTile :: Terrain -> Char
 renderTile (Wall _) = '#'
