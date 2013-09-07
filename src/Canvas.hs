@@ -39,7 +39,7 @@ printCanvas (Canvas off b) pfn = void $
   mapM 
   (\ pt -> 
     let (ch,bright) = pfn pt
-        ch' = if ch == (cast '.') && (not bright) then (cast ' ') else ch in
+        ch' = if ch == (cast '"') && (not bright) then (cast '\'') else ch in
       do when bright attrBoldOn
          unless bright attrDimOn
          printCh (pt + off) (cast $ ch')
@@ -50,8 +50,7 @@ printCanvas (Canvas off b) pfn = void $
 
 stdCanvas :: IO Canvas
 stdCanvas = do
-  (y, x) <- scrSize
-  return $ Canvas zeroPoint (Box (x,y))
+  return $ Canvas zeroPoint (Box (30,20))
 
 cast :: (Enum a, Enum b) => a -> b
 cast = toEnum . fromEnum

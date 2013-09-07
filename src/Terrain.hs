@@ -12,7 +12,7 @@ data Terrain =
 renderTile :: Terrain -> Char
 renderTile (Wall _) = '#'
 renderTile (Pillar _) = 'O'
-renderTile (Floor _) = '.'
+renderTile (Floor _) = '"'
 
 traversable :: Terrain -> Bool
 traversable (Wall _) = False
