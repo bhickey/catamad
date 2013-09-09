@@ -15,6 +15,7 @@ Executable catamad
   Build-Depends:  base,
                   containers >= 0.4.0.0,
                   hscurses >= 1.4.1.0,
+                  pqueue >= 1.2.1,
                   random >= 1.0.0.3,
                   setlocale >= 0.0.3,
                   vector >= 0.7.1
