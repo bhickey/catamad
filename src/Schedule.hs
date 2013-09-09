@@ -1,8 +1,6 @@
 module Schedule where
 
 import Prelude hiding (null)
-
-import Data.Maybe
 import Data.PQueue.Min
 
 data Event a = Event

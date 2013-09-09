@@ -11,7 +11,6 @@ import Monster
 import Terrain
 import Turn
 import GameState
-import Schedule
 
 import UI.HSCurses.Curses (refresh, update, getCh, Key(..))
 
