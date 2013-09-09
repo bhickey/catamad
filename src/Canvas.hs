@@ -50,7 +50,7 @@ printCanvas (Canvas off b) pfn = void $
 
 stdCanvas :: IO Canvas
 stdCanvas = do
-  return $ Canvas zeroPoint (Box (30,20))
+  return $ Canvas zeroPoint (Box (51,51))
 
 cast :: (Enum a, Enum b) => a -> b
 cast = toEnum . fromEnum

@@ -15,11 +15,9 @@ renderTile (Pillar _) = 'O'
 renderTile (Floor _) = '"'
 
 traversable :: Terrain -> Bool
-traversable (Wall _) = False
-traversable (Pillar _) = False
 traversable (Floor _) = True
+traversable _ = False
 
 allowsVisibility :: Terrain -> Bool
-allowsVisibility (Wall _) = False
-allowsVisibility (Pillar _) = False
 allowsVisibility (Floor _) = True
+allowsVisibility _ = False
