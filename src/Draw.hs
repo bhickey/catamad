@@ -1,16 +1,18 @@
 module Draw where
 
+import Action
 import Box
 import Canvas
 import Point
 import FOV
 import Cursor
 import Dungeon
-import Direction
 import Monster
 import Terrain
 import Turn
 import GameState
+
+import Keyboard
 
 import UI.HSCurses.Curses (refresh, update, getCh, Key(..))
 
@@ -49,20 +51,22 @@ draw_loop (LevelState (cr, you) them dgn now) = do
                           Nothing -> (' ', False)
  
 handleChar :: Dungeon Terrain -> Cursor -> IO (Maybe Cursor)
-handleChar dungeon cr = do
+handleChar d cr = do
+    action <- processKey
+    return $ doAction action d cr
+  
+doAction :: Action -> Dungeon Terrain -> Cursor -> Maybe Cursor
+doAction (MoveAttack dir) dun cr =
+  let cr' = move cr dir in
+    if traversable $! (unconditionalGet dun cr')
+    then return $! cr'
+    else return $! cr
+doAction _ _ _ = Nothing
+
+processKey :: IO Action
+processKey = do
   keypress <- getCh
   case keypress of
-    KeyChar 'q' -> return Nothing
-    KeyChar 'k' -> (mv North)
-    KeyChar 'u' -> (mv NorthEast)
-    KeyChar 'l' -> (mv East)
-    KeyChar 'n' -> (mv SouthEast)
-    KeyChar 'j' -> (mv South)
-    KeyChar 'b' -> (mv SouthWest)
-    KeyChar 'h' -> (mv West)
-    KeyChar 'y' -> (mv NorthWest)
-    _ -> handleChar dungeon cr
-  where mv d = let cr' = move cr d in
-                 if traversable $! (unconditionalGet dungeon cr' )
-                 then return $! Just cr'
-                 else return $! Just cr
+    KeyChar x -> return $ getAction defaultKeymap x
+    _ -> processKey
+
