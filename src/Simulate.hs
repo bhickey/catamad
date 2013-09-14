@@ -1,4 +1,4 @@
-module Draw where
+module Simulate where
 
 import Action
 import Box
@@ -18,12 +18,12 @@ import UI.HSCurses.Curses (refresh, update, getCh, Key(..))
 
 import Data.Map (member, (!))
 
-draw :: IO ()
-draw = do
-  draw_loop newState
+simulate :: IO ()
+simulate = do
+  simulation_loop newState
 
-draw_loop :: LevelState -> IO ()
-draw_loop (LevelState (cr, you) them dgn now) = do 
+simulation_loop :: LevelState -> IO ()
+simulation_loop (LevelState (cr, you) them dgn now) = do 
   cv@(Canvas _ bx) <- stdCanvas
   let center = centerPt bx
       offset = cr - center
@@ -35,7 +35,8 @@ draw_loop (LevelState (cr, you) them dgn now) = do
     do maybeCr <- (handleChar dgn' cr) 
        case maybeCr of
          Nothing -> return ()
-         Just cr' -> draw_loop (LevelState (cr', you) them dgn' (nextTurn now))
+         Just cr' ->
+           simulation_loop (LevelState (cr', you) them dgn' (nextTurn now))
     where renderFn d p =
             let isVis = case get d p of
                           Just (_, t) -> now == seenOn t
