@@ -1,7 +1,8 @@
 module Schedule where
 
 import Prelude hiding (null)
-import Data.PQueue.Min
+import Data.PQueue.Min (MinQueue, insert, deleteFindMin, null)
+import qualified Data.PQueue.Min as PQ
 
 data Event a = Event
   { time :: Int,
@@ -15,6 +16,12 @@ instance Ord (Event a) where
 
 data Schedule a = Schedule 
   { queue :: MinQueue (Event a) }
+
+empty :: Schedule a
+empty = (Schedule PQ.empty)
+
+singleton :: a -> Schedule a
+singleton x = Schedule (PQ.singleton (Event 0 x))
 
 addEvent :: Int -> a -> Schedule a -> Schedule a
 addEvent t a q = Schedule $ insert (Event t a) (queue q)
