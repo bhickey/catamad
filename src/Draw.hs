@@ -19,7 +19,7 @@ draw (GameState _ (cr, you) them dgn now) = do
       offset = cr - center in
     printCanvas cv (\ p -> renderFn dgn (p + offset)) >>
     writeTo cv center >>
-    print_string 0 0 (show cr) >>
+    print_string 0 0 (show now) >>
     refresh >> update >>
     return ()
     where renderFn d p =

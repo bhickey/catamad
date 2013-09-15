@@ -9,6 +9,10 @@ where
 data Turn = Turn Integer | Never deriving (Eq, Ord)
 newtype Visibility = Visibility { seenOn :: Turn }
 
+instance Show Turn where
+  show Never = "Never"
+  show (Turn t) = "Turn " ++ show t
+
 firstTurn :: Turn
 firstTurn = Turn 0
 
