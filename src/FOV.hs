@@ -5,16 +5,17 @@ import Point
 import Point.Metric
 import Terrain        
 import Dungeon
-                                     
-import Turn
+              
+import Canvas
+import GameState
 
 import Data.Maybe
 
 viewRadius :: Int
 viewRadius = 6
 
-doFov :: Turn -> Dungeon Terrain -> Box -> Point -> Dungeon Terrain
-doFov trn d bx cursor =
+doFov :: Canvas -> GameState -> Dungeon Terrain
+doFov (Canvas _ bx) gs = do
   let getTerrain p = unconditionalGet d (p + cursor)
       visible (Point (0,0)) = Just (getTerrain zeroPoint)
       visible i = 
@@ -24,7 +25,10 @@ doFov trn d bx cursor =
              else Nothing
         else Nothing in
     foldl (cache trn) d [(i + cursor, (fromJust.visible) i) | i <- centerIndices bx, (isJust.visible) i]
-
+    where cursor = fst $ levelPlayer gs
+          trn = levelTurn gs
+          d = levelBasis gs
+          
 inwardPoints :: Point -> [Point]
 inwardPoints p = 
   filter (\ n -> chessDistance zeroPoint n < chessDistance zeroPoint p) 

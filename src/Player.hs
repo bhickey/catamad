@@ -1,8 +1,10 @@
 module Player where
 
 import Action
+import Canvas
 import Draw (draw)
 import Dungeon
+import FOV
 import GameState
 import Keyboard
 import Point
@@ -13,8 +15,16 @@ import Turn
 import UI.HSCurses.Curses (getCh, Key(..))
 
 playerAction :: GameState -> IO GameState 
-playerAction gs = do 
-  (draw gs) >> repl gs
+playerAction gs = do
+  canvas <- stdCanvas
+  let gs' = fov canvas gs in
+    draw gs' >>
+    repl gs'
+
+fov :: Canvas -> GameState -> GameState
+fov c g@(GameState s p m _ t) =
+  let dungeon = doFov c g in
+    (GameState s p m dungeon t)
 
 repl :: GameState -> IO GameState
 repl gs = do

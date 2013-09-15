@@ -4,7 +4,6 @@ import Box
 import Canvas
 import Cursor
 import Dungeon
-import FOV
 import GameState
 import Terrain
 import Turn
@@ -17,9 +16,8 @@ draw :: GameState -> IO ()
 draw (GameState _ (cr, you) them dgn now) = do 
   cv@(Canvas _ bx) <- stdCanvas
   let center = centerPt bx
-      offset = cr - center
-      dgn' = doFov now dgn bx cr in
-    printCanvas cv (\ p -> renderFn dgn' (p + offset)) >>
+      offset = cr - center in
+    printCanvas cv (\ p -> renderFn dgn (p + offset)) >>
     writeTo cv center >>
     print_string 0 0 (show cr) >>
     refresh >> update >>
