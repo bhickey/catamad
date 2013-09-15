@@ -29,6 +29,7 @@ runAction (MoveAttack dir) (GameState schedule (pt, player) mobs dungeon turn) =
     if traversable $! (unconditionalGet dungeon pt')
       then Just (GameState (updateSchedule schedule) (pt', player) mobs dungeon (nextTurn turn))
       else Nothing
+runAction Quit gs = Just gs
 runAction _ _ = Nothing
 
 updateSchedule :: Schedule GameEvent -> Schedule GameEvent
