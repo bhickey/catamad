@@ -5,8 +5,6 @@ import Point.Metric
 import Terrain
 import Turn
 
-import Math.Log
-
 import Prelude hiding (lookup)
 import Data.Map
 
@@ -34,16 +32,7 @@ circularRoom = Dungeon dungeonFunction empty
 
 dungeonFunction :: Point -> Terrain
 dungeonFunction (Point (0,0)) = Floor Stone
-dungeonFunction p =
-    if cellCenterDist p < cellSize p
-    then Wall Stone
-    else Floor Stone
-  where scale = 7
-        rescale a = (a `div` scale)
-        cell (Point (x, y)) = Point (rescale x, rescale y)
-        cellSize (Point (x, y)) = (discreteLg 45 257 !! (abs $ (y + (discreteLg 45 257 !! (abs $ x `mod` 257)) `mod` 257))) `mod` 4
-        cellCenter (Point (x, y)) = (Point (x * (scale `div` 2 + 1), y * (scale `div` 2 + 1)))
-        cellCenterDist pt =
-          let c = cell pt in
-            manhattanDistance pt (cellCenter c)
-
+dungeonFunction p@(Point (x, y)) =
+    if (x `mod` 5 < 2 || y `mod` 5 < 2) && euclideanDistance p zeroPoint < 25
+    then Floor Stone
+    else Wall Stone
