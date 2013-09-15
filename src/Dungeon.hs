@@ -31,15 +31,16 @@ cache t (Dungeon b c) (pt,e) =
 
 circularRoom :: Dungeon Terrain
 circularRoom = Dungeon
-  (\ p@(Point (x,y)) -> 
-    let dist = euclideanDistance p zeroPoint
-        w = doMagic p in
-      if dist < 8 || (dist > 12 && dist < 20 - w)
-      then Floor Stone
-      else if x < 2 && x > -2 && y < 15 && y > -15
-           then Floor Stone
-           else Wall (if dist > 100 then Bedrock else Stone))
+  (\ p -> if cellCenterDist p < cellSize p
+    then Wall Stone
+    else Floor Stone)
   empty
-  where doMagic p@(Point (x,y)) = ((discreteLg 45 257) !! 
-          ((x * 17 + y * 31 + 1337 * (fromIntegral $ toInteger p)) 
-          `mod` 257)) `mod` 3
+  where scale = 7
+        rescale a = (a `div` scale)
+        cell (Point (x, y)) = Point (rescale x, rescale y)
+        cellSize (Point (x, y)) = (discreteLg 45 257 !! (abs $ (y + (discreteLg 45 257 !! (abs $ x `mod` 257)) `mod` 257))) `mod` 3
+        cellCenter (Point (x, y)) = (Point (x * (scale `div` 2 + 1), y * (scale `div` 2 + 1)))
+        cellCenterDist p =
+          let c = cell p in
+            manhattanDistance p (cellCenter c)
+
