@@ -32,6 +32,7 @@ circularRoom = Dungeon dungeonFunction empty
 
 dungeonFunction :: Point -> Terrain
 dungeonFunction (Point (0,0)) = Floor Stone
+dungeonFunction (Point (5,0)) = Stairs Stone
 dungeonFunction p@(Point (x, y)) =
     let x' = x `mod` 5
         y' = y `mod` 5 in

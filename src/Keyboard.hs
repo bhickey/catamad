@@ -21,5 +21,6 @@ defaultKeymap = M.fromList $
    ('j', MoveAttack South),
    ('b', MoveAttack SouthWest),
    ('h', MoveAttack West),
+   ('>', UseStairs),
    ('.', Wait),
    ('q', Quit)]

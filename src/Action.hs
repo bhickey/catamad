@@ -6,6 +6,7 @@ data Action =
     Attack Direction
   | Move Direction
   | MoveAttack Direction
+  | UseStairs
   | Wait
   | Quit
   | NoAction

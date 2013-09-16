@@ -39,6 +39,14 @@ runAction (MoveAttack dir) (GameState schedule (pt, player) mobs dungeon turn) =
     if traversable $! (unconditionalGet dungeon pt')
       then Just (GameState (updateSchedule schedule) (pt', player) mobs dungeon (nextTurn turn))
       else Nothing
+runAction UseStairs gs =
+  if isStairs $ unconditionalGet dungeon pt
+  then Just $ newLevel (GameEvent playerAction) gs
+  else Nothing
+  where pt = fst $ levelPlayer gs 
+        dungeon = levelBasis gs
+        isStairs (Stairs _) = True
+        isStairs _ = False
 runAction Quit gs = Just gs
 runAction _ _ = Nothing
 

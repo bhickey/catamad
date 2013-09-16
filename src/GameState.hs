@@ -1,4 +1,4 @@
-module GameState (GameState(..), GameEvent(..), changeSchedule, mkState) where
+module GameState (GameState(..), GameEvent(..), changeSchedule, mkState, newLevel) where
 
 import Dungeon
 import Monster
@@ -30,3 +30,11 @@ mkState g = GameState
   (M.singleton (Point (0,3)) (Monster 'B'))
   circularRoom
   firstTurn
+
+newLevel :: GameEvent -> GameState -> GameState
+newLevel g (GameState _ (_, player) _ _ turn) = GameState
+  (S.singleton g)
+  (zeroPoint, player)
+  (M.singleton (Point (0,3)) (Monster 'B'))
+  circularRoom
+  (nextTurn turn)
