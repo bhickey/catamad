@@ -33,6 +33,15 @@ circularRoom = Dungeon dungeonFunction empty
 dungeonFunction :: Point -> Terrain
 dungeonFunction (Point (0,0)) = Floor Stone
 dungeonFunction p@(Point (x, y)) =
-    if (x `mod` 5 < 2 || y `mod` 5 < 2) && euclideanDistance p zeroPoint < 25
-    then Floor Stone
-    else Wall Stone
+    let x' = x `mod` 5
+        y' = y `mod` 5 in
+    if (euclideanDistance p zeroPoint > 24)
+      then Wall Bedrock
+      else if (x' < 2 || y' < 2)
+           then Floor Stone
+           else if (x' == 2 && y' == 2)
+                || (x' == 2 && y' == 4)
+                || (x' == 4 && y' == 2)
+                || (x' == 4 && y' == 4)
+                then Pillar Stone
+                else Wall Stone
