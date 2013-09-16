@@ -28,13 +28,13 @@ mkState g = GameState
   (S.singleton g)
   (zeroPoint, (Monster '@'))
   (M.singleton (Point (0,3)) (Monster 'B'))
-  circularRoom
+  (circularRoom zeroPoint)
   firstTurn
 
-newLevel :: GameEvent -> GameState -> GameState
-newLevel g (GameState _ (_, player) _ _ turn) = GameState
+newLevel :: Point -> GameEvent -> GameState -> GameState
+newLevel p g (GameState _ (_, player) _ _ turn) = GameState
   (S.singleton g)
   (zeroPoint, player)
   (M.singleton (Point (0,3)) (Monster 'B'))
-  circularRoom
+  (circularRoom p)
   (nextTurn turn)

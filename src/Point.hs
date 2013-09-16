@@ -1,6 +1,7 @@
 module Point where
 
 import Direction
+import System.Random
 
 newtype Point = Point { point :: (Int, Int) } deriving (Eq, Ord)
 
@@ -54,6 +55,13 @@ instance Integral Point where
            else if x > 0
                 then (2 * ring) + x' - y' + off
                 else (5 * ring) + y' - (2 * x') + off
+
+instance Random Point where
+  randomR _ _ = undefined
+  random g =
+    let (l, g') = random g
+        (r, g'') = random g' in
+      (Point (l, r), g'')
 
 zeroPoint :: Point
 zeroPoint = Point (0,0)

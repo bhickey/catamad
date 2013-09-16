@@ -1,4 +1,4 @@
-module Dungeon (unconditionalGet, get, cache, circularRoom, Dungeon) where
+module Dungeon (unconditionalGet, get, cache, circularRoom, Dungeon, hash) where
 
 import Point
 import Point.Metric
@@ -7,6 +7,8 @@ import Turn
 
 import Prelude hiding (lookup)
 import Data.Map
+
+import Data.Hash.MD5
 
 data Dungeon a = Dungeon
   { dungeonBasis :: (Point -> a)
@@ -27,22 +29,17 @@ cache :: Turn -> Dungeon a -> (Point, a) -> Dungeon a
 cache t (Dungeon b c) (pt,e) =
   Dungeon b (insert pt (e, Visibility t) c)
 
-circularRoom :: Dungeon Terrain
-circularRoom = Dungeon dungeonFunction empty
+circularRoom :: Point -> Dungeon Terrain
+circularRoom p = Dungeon (dungeonFunction p) empty
 
-dungeonFunction :: Point -> Terrain
-dungeonFunction (Point (0,0)) = Floor Stone
-dungeonFunction (Point (5,0)) = Stairs Stone
-dungeonFunction p@(Point (x, y)) =
-    let x' = x `mod` 5
-        y' = y `mod` 5 in
-    if (euclideanDistance p zeroPoint > 24)
-      then Wall Bedrock
-      else if (x' < 2 || y' < 2)
-           then Floor Stone
-           else if (x' == 2 && y' == 2)
-                || (x' == 2 && y' == 4)
-                || (x' == 4 && y' == 2)
-                || (x' == 4 && y' == 4)
-                then Pillar Stone
-                else Wall Stone
+dungeonFunction :: Point -> Point -> Terrain
+dungeonFunction _ (Point (0,0)) = Floor Stone
+dungeonFunction _ (Point (5,0)) = Stairs
+dungeonFunction offset p =
+    let h = hash (offset + p) in
+      if (euclideanDistance p zeroPoint) > (5 + (fromIntegral $ h `mod` 5))
+        then Wall Bedrock
+        else Floor Stone
+
+hash :: Point -> Integer
+hash p = md5i $ Str (show p)

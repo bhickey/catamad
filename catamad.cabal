@@ -18,7 +18,8 @@ Executable catamad
                   pqueue >= 1.2.1,
                   random >= 1.0.0.3,
                   setlocale >= 0.0.3,
-                  vector >= 0.7.1
+                  vector >= 0.7.1,
+                  MissingH >= 1.1.0.3
   Main-Is:        Main.hs
   GHC-Options:    -Wall 
                   -Werror
