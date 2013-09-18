@@ -1,11 +1,11 @@
 {-# LANGUAGE ExistentialQuantification #-}
-module Monster where
+module Actor where
 
-data Monster = Monster 
+data Actor = Actor
   { sym :: Char }
 
-instance Mob Monster where
-  glyph (Monster s) = s
+instance Mob Actor where
+  glyph actor = sym actor
 
 class Mob a where
   glyph :: a -> Char

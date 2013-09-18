@@ -9,7 +9,7 @@ import Terrain
 import Turn
 
 import Data.Map (member, (!))
-import Monster
+import Actor
 import UI.HSCurses.Curses (refresh, update)
 
 draw :: GameState -> IO ()
