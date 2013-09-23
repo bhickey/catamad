@@ -1,5 +1,7 @@
 module FOV (doFov) where
 
+import Actor.Map
+
 import Box
 import Point
 import Point.Metric
@@ -25,7 +27,7 @@ doFov (Canvas _ bx) gs = do
              else Nothing
         else Nothing in
     foldl (cache trn) d [(i + cursor, (fromJust.visible) i) | i <- centerIndices bx, (isJust.visible) i]
-    where cursor = fst $ levelPlayer gs
+    where cursor = snd $ getPlayer $ actorMap gs
           trn = levelTurn gs
           d = levelBasis gs
           

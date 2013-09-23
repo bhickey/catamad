@@ -1,6 +1,8 @@
 module Player where
 
 import Action
+import Actor
+import qualified Actor.Map as AM
 import Canvas
 import Draw (draw)
 import Dungeon
@@ -12,6 +14,7 @@ import Schedule
 import Terrain
 import Turn
 
+import Data.Maybe (fromJust)
 import System.Random
 
 import UI.HSCurses.Curses (getCh, Key(..))
@@ -25,9 +28,9 @@ playerAction gs = do
     repl gs' gen
 
 fov :: Canvas -> GameState -> GameState
-fov c g@(GameState s p m _ t) =
+fov c g@(GameState s am _ t) =
   let dungeon = doFov c g in
-    (GameState s p m dungeon t)
+    (GameState s am dungeon t)
 
 repl :: GameState -> StdGen -> IO GameState
 repl gs gen = do
@@ -38,16 +41,22 @@ repl gs gen = do
       Nothing -> repl gs gen''
 
 runAction :: Action -> GameState -> StdGen -> Maybe GameState
-runAction (MoveAttack dir) (GameState schedule (pt, player) mobs dungeon turn) _ =
-  let pt' = move pt dir in
+runAction (MoveAttack dir) (GameState schedule am dungeon turn) _ =
+  let pt = snd $ AM.getPlayer am
+      pt' = move pt dir in
     if traversable $! (unconditionalGet dungeon pt')
-      then Just (GameState (updateSchedule schedule) (pt', player) mobs dungeon (nextTurn turn))
-      else Nothing
+    then Just (GameState
+              (updateSchedule schedule)
+              (fromJust $ AM.moveActor am PlayerId pt')
+              dungeon
+              (nextTurn turn))
+    else Nothing
+
 runAction UseStairs gs gen =
   if isStairs $ unconditionalGet dungeon pt
   then Just $ newLevel (fst $ random gen) (GameEvent playerAction) gs
   else Nothing
-  where pt = fst $ levelPlayer gs 
+  where pt = snd $ AM.getPlayer $ actorMap gs 
         dungeon = levelBasis gs
         isStairs Stairs = True
         isStairs _ = False

@@ -4,8 +4,8 @@ module Actor where
 import Data.Unique
 
 data Actor = Actor
-  { sym :: Char,
-    id :: ActorId }
+  { id :: ActorId,
+    sym :: Char }
 
 data ActorId = 
     PlayerId

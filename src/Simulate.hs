@@ -17,7 +17,7 @@ simulation_loop game = do
       simulation_loop game'
 
 updateSchedule :: GameState -> Schedule GameEvent -> GameState
-updateSchedule (GameState _ p m b t) s = (GameState s p m b t)
+updateSchedule (GameState _ am b t) s = (GameState s am b t)
 
 runEvent :: GameEvent -> GameState -> IO GameState
 runEvent (GameEvent act) ls = act ls
