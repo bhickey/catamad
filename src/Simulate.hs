@@ -1,28 +1,27 @@
 module Simulate where
 
 import GameState
-import Player (playerAction)
-import Schedule (getEvent, Event(..), Schedule(..))
+import Player
+import Schedule (getEvent, addEvent, Event(..))
 
 simulate :: IO ()
 simulate = do
-  simulation_loop (mkState initEvent)
+  simulation_loop initialSchedule initialState
 
-simulation_loop :: GameState -> IO ()
-simulation_loop game = do 
-  case getEvent $ levelSchedule game of
+simulation_loop :: GameSchedule -> GameState -> IO ()
+simulation_loop schedule game = do 
+  case getEvent $ schedule of
     Nothing -> return ()
     Just ((Event _ act), s) -> do
-      game' <- runEvent act (updateSchedule game s)
-      simulation_loop game'
+      (game', maybeEvent) <- runEvent act game
+      simulation_loop (updateSchedule maybeEvent s) game'
 
-updateSchedule :: GameState -> Schedule GameEvent -> GameState
-updateSchedule (GameState _ am b t) s = (GameState s am b t)
+updateSchedule :: Maybe TimedEvent -> GameSchedule -> GameSchedule
+updateSchedule Nothing s = s
+updateSchedule (Just (t, e)) s = addEvent t e s
 
-runEvent :: GameEvent -> GameState -> IO GameState
-runEvent (GameEvent act) ls = act ls
-
-initEvent :: GameEvent
-initEvent = GameEvent playerAction
-
-
+runEvent :: GameEvent -> GameState -> IO (GameState, Maybe TimedEvent)
+runEvent (MonsterEvent act) gs = return $ act gs
+runEvent (PlayerEvent _) gs = do
+	gs' <- showDungeon gs
+	return (gs', Nothing)

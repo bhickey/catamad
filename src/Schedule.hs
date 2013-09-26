@@ -1,11 +1,13 @@
 module Schedule where
 
+import Time
+
 import Prelude hiding (null)
 import Data.PQueue.Min (MinQueue, insert, deleteFindMin, null)
 import qualified Data.PQueue.Min as PQ
 
 data Event a = Event
-  { time :: Int,
+  { time :: Time,
     action :: a }
 
 instance Eq (Event a) where
@@ -15,20 +17,21 @@ instance Ord (Event a) where
   (Event t1 _) `compare` (Event t2 _) = t1 `compare` t2
 
 data Schedule a = Schedule 
-  { queue :: MinQueue (Event a) }
+  { now :: Time,
+    queue :: MinQueue (Event a) }
 
 empty :: Schedule a
-empty = (Schedule PQ.empty)
+empty = (Schedule timeZero PQ.empty)
 
-singleton :: a -> Schedule a
-singleton x = Schedule (PQ.singleton (Event 0 x))
+singleton :: Time -> a -> Schedule a
+singleton t x = Schedule t (PQ.singleton (Event t x))
 
-addEvent :: Int -> a -> Schedule a -> Schedule a
-addEvent t a q = Schedule $ insert (Event t a) (queue q)
+addEvent :: Time -> a -> Schedule a -> Schedule a
+addEvent t a q = Schedule (now q) $ insert (Event (addTime t (now q)) a) (queue q)
 
 getEvent :: Schedule a -> Maybe (Event a, Schedule a)
-getEvent (Schedule q) = 
+getEvent (Schedule t q) = 
   if (null q)
   then Nothing
-  else let (v, q') = deleteFindMin q in
-    Just (v, Schedule q')
+  else let (e@(Event t' _), q') = deleteFindMin q in
+    Just (e, Schedule (max t t') q')

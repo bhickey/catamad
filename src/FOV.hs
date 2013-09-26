@@ -16,6 +16,7 @@ import Data.Maybe
 viewRadius :: Int
 viewRadius = 6
 
+-- TODO: Rewrite to return Set Point
 doFov :: Canvas -> GameState -> Dungeon Terrain
 doFov (Canvas _ bx) gs = do
   let getTerrain p = unconditionalGet d (p + cursor)

@@ -1,38 +1,50 @@
-module GameState (GameState(..), GameEvent(..), changeSchedule, mkState, newLevel) where
+module GameState (
+  GameSchedule,
+  GameState(..),
+  GameEvent(MonsterEvent, PlayerEvent),
+  TimedEvent,
+  initialState,
+  initialSchedule,
+  newLevel) where
 
 import Actor
 import Actor.Map (ActorMap)
 import qualified Actor.Map as AM
 import Dungeon
 import Point
+import Time
 import Turn
 import Terrain
 
+import Schedule (Schedule)
 import qualified Schedule as S
 
 import Data.Maybe (fromJust)
 
-data GameEvent = GameEvent (GameState -> IO GameState)
+type TimedEvent = (Time, GameEvent)
+
+data GameEvent =
+    MonsterEvent (GameState -> (GameState, Maybe TimedEvent))
+  | PlayerEvent (GameState -> (GameState, Maybe TimedEvent))
+
+type GameSchedule = Schedule GameEvent
 
 data GameState = GameState
-  { levelSchedule :: S.Schedule GameEvent
-  , actorMap :: ActorMap
+  { actorMap :: ActorMap
   , levelBasis :: Dungeon Terrain
   , levelTurn :: Turn }
 
-changeSchedule :: GameState -> S.Schedule GameEvent -> GameState
-changeSchedule (GameState _ a b t) s = GameState s a b t
+initialSchedule :: GameSchedule
+initialSchedule = S.singleton timeZero (PlayerEvent undefined)
 
-mkState :: GameEvent -> GameState
-mkState g = GameState 
-  (S.singleton g)
-  (fromJust $ AM.fromList [(Actor PlayerId '@', zeroPoint)])
-  (circularRoom zeroPoint)
-  firstTurn
+initialState :: GameState
+initialState = GameState (fromJust $ AM.fromList [(Actor PlayerId '@', zeroPoint)])
+                       (circularRoom zeroPoint)
+                       firstTurn
 
-newLevel :: Point -> GameEvent -> GameState -> GameState
-newLevel p g (GameState _ _ _ turn) = GameState
-  (S.singleton g)
-  (fromJust $ AM.fromList [(Actor PlayerId '@', zeroPoint)])
-  (circularRoom p)
-  (nextTurn turn)
+newLevel :: Point -> Time -> GameEvent -> GameState -> (GameState, GameSchedule)
+newLevel p t g (GameState _ _ turn) =
+  (GameState (fromJust $ AM.fromList [(Actor PlayerId '@', zeroPoint)])
+             (circularRoom p)
+             (nextTurn turn),
+  S.singleton t g)

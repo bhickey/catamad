@@ -14,7 +14,7 @@ import Actor
 import UI.HSCurses.Curses (refresh, update)
 
 draw :: GameState -> IO ()
-draw (GameState _ am dgn now) = do 
+draw (GameState am dgn now) = do 
   cv@(Canvas _ bx) <- stdCanvas
   let (_, cr) = getPlayer am
       center = centerPt bx

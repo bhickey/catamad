@@ -1,37 +1,35 @@
 module Player where
 
-import Action
-import Actor
-import qualified Actor.Map as AM
+--import Action
+--import Actor
+--import qualified Actor.Map as AM
 import Canvas
 import Draw (draw)
-import Dungeon
+--import Dungeon
 import FOV
 import GameState
-import Keyboard
-import Point
-import Schedule
-import Terrain
-import Turn
+--import Keyboard
+--import Point
+--import Schedule
+--import Terrain
+--import Time
+--import Turn
 
-import Data.Maybe (fromJust)
-import System.Random
+--import Data.Maybe (fromJust)
 
-import UI.HSCurses.Curses (getCh, Key(..))
+import UI.HSCurses.Curses (getCh)
 
-playerAction :: GameState -> IO GameState 
-playerAction gs = do
+showDungeon :: GameState -> IO GameState 
+showDungeon gs = do
   canvas <- stdCanvas
-  gen <- newStdGen
   let gs' = fov canvas gs in
-    draw gs' >>
-    repl gs' gen
+    draw gs' >> getCh >> return gs'
 
 fov :: Canvas -> GameState -> GameState
-fov c g@(GameState s am _ t) =
+fov c g@(GameState am _ t) =
   let dungeon = doFov c g in
-    (GameState s am dungeon t)
-
+    (GameState am dungeon t)
+{-
 repl :: GameState -> StdGen -> IO GameState
 repl gs gen = do
   act <- processKey
@@ -40,21 +38,17 @@ repl gs gen = do
       Just gs' -> return gs'
       Nothing -> repl gs gen''
 
-runAction :: Action -> GameState -> StdGen -> Maybe GameState
-runAction (MoveAttack dir) (GameState schedule am dungeon turn) _ =
+runAction :: Action -> GameState -> StdGen -> Maybe (GameState, Maybe TimedEvent)
+runAction (MoveAttack dir) (GameState am dungeon turn) _ =
   let pt = snd $ AM.getPlayer am
       pt' = move pt dir in
     if traversable $! (unconditionalGet dungeon pt')
-    then Just (GameState
-              (updateSchedule schedule)
-              (fromJust $ AM.moveActor am PlayerId pt')
-              dungeon
-              (nextTurn turn))
+    then Just undefined
     else Nothing
 
 runAction UseStairs gs gen =
   if isStairs $ unconditionalGet dungeon pt
-  then Just $ newLevel (fst $ random gen) (GameEvent playerAction) gs
+  then Just $ newLevel (fst $ random gen) timeZero (PlayerEvent undefined) gs
   else Nothing
   where pt = snd $ AM.getPlayer $ actorMap gs 
         dungeon = levelBasis gs
@@ -63,12 +57,10 @@ runAction UseStairs gs gen =
 runAction Quit gs _ = Just gs
 runAction _ _ _ = Nothing
 
-updateSchedule :: Schedule GameEvent -> Schedule GameEvent
-updateSchedule = addEvent 0 (GameEvent playerAction)
-
 processKey :: IO Action
 processKey = do
   keypress <- getCh
   case keypress of
     KeyChar x -> return $ getAction defaultKeymap x
     _ -> processKey
+-}
