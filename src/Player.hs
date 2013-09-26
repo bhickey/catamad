@@ -1,36 +1,23 @@
 module Player where
 
---import Action
---import Actor
---import qualified Actor.Map as AM
-import Canvas
-import Draw (draw)
---import Dungeon
-import FOV
+import Action
+import Actor
+import qualified Actor.Map as AM
+import Dungeon
 import GameState
---import Keyboard
---import Point
---import Schedule
---import Terrain
---import Time
---import Turn
+import Keyboard
+import Point
+import Terrain
+import Time
+import Turn
 
---import Data.Maybe (fromJust)
+import Data.Maybe (fromJust)
 
-import UI.HSCurses.Curses (getCh)
+import System.Random
 
-showDungeon :: GameState -> IO GameState 
-showDungeon gs = do
-  canvas <- stdCanvas
-  let gs' = fov canvas gs in
-    draw gs' >> getCh >> return gs'
+import UI.HSCurses.Curses (getCh, Key(..))
 
-fov :: Canvas -> GameState -> GameState
-fov c g@(GameState am _ t) =
-  let dungeon = doFov c g in
-    (GameState am dungeon t)
-{-
-repl :: GameState -> StdGen -> IO GameState
+repl :: GameState -> StdGen -> IO (GameState, Maybe TimedEvent)
 repl gs gen = do
   act <- processKey
   let (gen', gen'') = split gen in
@@ -43,9 +30,10 @@ runAction (MoveAttack dir) (GameState am dungeon turn) _ =
   let pt = snd $ AM.getPlayer am
       pt' = move pt dir in
     if traversable $! (unconditionalGet dungeon pt')
-    then Just undefined
+    then Just (GameState (fromJust $ AM.moveActor am PlayerId pt') dungeon (nextTurn turn), Just (mkTime 100, PlayerEvent))
     else Nothing
 
+{-
 runAction UseStairs gs gen =
   if isStairs $ unconditionalGet dungeon pt
   then Just $ newLevel (fst $ random gen) timeZero (PlayerEvent undefined) gs
@@ -55,7 +43,9 @@ runAction UseStairs gs gen =
         isStairs Stairs = True
         isStairs _ = False
 runAction Quit gs _ = Just gs
+--}
 runAction _ _ _ = Nothing
+
 
 processKey :: IO Action
 processKey = do
@@ -63,4 +53,3 @@ processKey = do
   case keypress of
     KeyChar x -> return $ getAction defaultKeymap x
     _ -> processKey
--}

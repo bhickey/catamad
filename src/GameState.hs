@@ -25,7 +25,7 @@ type TimedEvent = (Time, GameEvent)
 
 data GameEvent =
     MonsterEvent (GameState -> (GameState, Maybe TimedEvent))
-  | PlayerEvent (GameState -> (GameState, Maybe TimedEvent))
+  | PlayerEvent
 
 type GameSchedule = Schedule GameEvent
 
@@ -35,7 +35,7 @@ data GameState = GameState
   , levelTurn :: Turn }
 
 initialSchedule :: GameSchedule
-initialSchedule = S.singleton timeZero (PlayerEvent undefined)
+initialSchedule = S.singleton timeZero PlayerEvent
 
 initialState :: GameState
 initialState = GameState (fromJust $ AM.fromList [(Actor PlayerId '@', zeroPoint)])

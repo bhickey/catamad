@@ -8,13 +8,14 @@ import Cursor
 import qualified Dungeon as D
 import GameState
 import Terrain
+import Time
 import Turn
 
 import Actor
 import UI.HSCurses.Curses (refresh, update)
 
-draw :: GameState -> IO ()
-draw (GameState am dgn now) = do 
+draw :: Time -> GameState -> IO ()
+draw tm (GameState am dgn now) = do 
   cv@(Canvas _ bx) <- stdCanvas
   let (_, cr) = getPlayer am
       center = centerPt bx
@@ -22,6 +23,7 @@ draw (GameState am dgn now) = do
     printCanvas cv (\ p -> renderFn (p + offset)) >>
     writeTo cv center >>
     print_string 0 0 (show now) >>
+    print_string 0 1 (show tm) >>
     refresh >> update >>
     return ()
     where renderFn p =
