@@ -39,7 +39,7 @@ circularRoom p = Dungeon (dungeonFunction p) empty
 
 dungeonFunction :: Point -> Point -> Terrain
 dungeonFunction _ (Point (0,0)) = Floor Stone
-dungeonFunction _ (Point (5,0)) = Stairs
+dungeonFunction _ (Point (5,0)) = Door
 dungeonFunction offset p =
     let h = hash (offset + p) in
       if (euclideanDistance p zeroPoint) > (5 + (fromIntegral $ h `mod` 5))

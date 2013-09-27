@@ -23,7 +23,7 @@ viewBox =
 doFov :: Point -> Dungeon Terrain -> Set Point
 doFov cursor d = do
   let getTerrain p = unconditionalGet d (p + cursor)
-      visible (Point (0,0)) = Just (getTerrain zeroPoint)
+      visible (Point (0,0)) = Just (Floor Stone)
       visible i = 
         if chessDistance i zeroPoint < viewRadius
         then if any (\ p -> (isJust.visible) p && (allowsVisibility.fromJust.visible) p) (inwardPoints i)
