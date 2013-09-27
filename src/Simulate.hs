@@ -1,12 +1,16 @@
 module Simulate where
 
+import Actor.Map
+
+import Dungeon
 import GameState
 import Player
 import Schedule --(getEvent, addEvent, Event(..), time)
-import Canvas
 import Draw (draw)
 import FOV
 import Time
+
+import Data.Set (elems)
 
 import System.Random
 
@@ -35,11 +39,12 @@ runEvent t PlayerEvent gs = do
 
 showDungeon :: Time -> GameState -> IO GameState 
 showDungeon t gs = do
-  canvas <- stdCanvas
-  let gs' = fov canvas gs in
+  let gs' = applyFov gs in
     draw t gs' >> return gs'
 
-fov :: Canvas -> GameState -> GameState
-fov c g@(GameState am _ t) =
-  let dungeon = doFov c g in
-    (GameState am dungeon t)
+applyFov :: GameState -> GameState
+applyFov (GameState am d t) =
+  let p = snd $ getPlayer am
+      pts = doFov p d
+      d' = realizePoints t d (elems pts) in
+    GameState am d' t

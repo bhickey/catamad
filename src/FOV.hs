@@ -1,24 +1,27 @@
 module FOV (doFov) where
 
-import Actor.Map
-
 import Box
 import Point
 import Point.Metric
 import Terrain        
 import Dungeon
               
-import Canvas
-import GameState
-
 import Data.Maybe
 
-viewRadius :: Int
-viewRadius = 6
+import Data.Set (Set)
+import qualified Data.Set as S
 
--- TODO: Rewrite to return Set Point
-doFov :: Canvas -> GameState -> Dungeon Terrain
-doFov (Canvas _ bx) gs = do
+viewRadius :: Int
+viewRadius = 5
+
+viewBox :: Box
+viewBox =
+  let x = viewRadius * 2 + 1 in
+    Box (x, x)
+
+
+doFov :: Point -> Dungeon Terrain -> Set Point
+doFov cursor d = do
   let getTerrain p = unconditionalGet d (p + cursor)
       visible (Point (0,0)) = Just (getTerrain zeroPoint)
       visible i = 
@@ -27,11 +30,8 @@ doFov (Canvas _ bx) gs = do
              then Just $ getTerrain i
              else Nothing
         else Nothing in
-    foldl (cache trn) d [(i + cursor, (fromJust.visible) i) | i <- centerIndices bx, (isJust.visible) i]
-    where cursor = snd $ getPlayer $ actorMap gs
-          trn = levelTurn gs
-          d = levelBasis gs
-          
+    S.fromList [i + cursor | i <- centerIndices viewBox, (isJust.visible) i]
+ 
 inwardPoints :: Point -> [Point]
 inwardPoints p = 
   filter (\ n -> chessDistance zeroPoint n < chessDistance zeroPoint p) 

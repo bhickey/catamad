@@ -1,4 +1,4 @@
-module Dungeon (unconditionalGet, get, cache, circularRoom, Dungeon, hash) where
+module Dungeon (unconditionalGet, get, realizePoints, circularRoom, Dungeon, hash) where
 
 import Point
 import Point.Metric
@@ -6,7 +6,7 @@ import Terrain
 import Turn
 
 import Prelude hiding (lookup)
-import Data.Map
+import Data.Map hiding (foldl)
 
 import Data.Hash.MD5
 
@@ -25,9 +25,14 @@ get :: Dungeon a -> Point -> Maybe (a, Visibility)
 get d pt =
   lookup pt (dungeonCache d)
 
-cache :: Turn -> Dungeon a -> (Point, a) -> Dungeon a
-cache t (Dungeon b c) (pt,e) =
-  Dungeon b (insert pt (e, Visibility t) c)
+realizePoints :: Turn -> Dungeon a -> [Point] -> Dungeon a
+realizePoints t d = foldl (realizePoint t) d
+
+realizePoint :: Turn -> Dungeon a -> Point -> Dungeon a
+realizePoint t d@(Dungeon b c) pt =
+  let terrain = unconditionalGet d pt
+      vis = Visibility t in
+    Dungeon b (insert pt (terrain, vis) c)
 
 circularRoom :: Point -> Dungeon Terrain
 circularRoom p = Dungeon (dungeonFunction p) empty
