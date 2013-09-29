@@ -2,7 +2,6 @@ module Player where
 
 import Action
 import Actor
-import qualified Actor.Map as AM
 import Dungeon
 import GameState
 import Keyboard
@@ -10,6 +9,8 @@ import Point
 import Terrain
 import Time
 import Turn
+
+import Entity.Map
 
 import Data.Maybe (fromJust)
 
@@ -27,10 +28,10 @@ repl gs gen = do
 
 runAction :: Action -> GameState -> StdGen -> Maybe (GameState, Maybe TimedEvent)
 runAction (MoveAttack dir) (GameState am dungeon turn) _ =
-  let pt = snd $ AM.getPlayer am
+  let pt = snd $ getPlayer am
       pt' = move pt dir in
     if traversable $! (unconditionalGet dungeon pt')
-    then Just (GameState (fromJust $ AM.moveActor am PlayerId pt') dungeon (nextTurn turn), Just (mkTime 100, PlayerEvent))
+    then Just (GameState (fromJust $ moveEntity am player pt') dungeon (nextTurn turn), Just (mkTime 100, PlayerEvent))
     else Nothing
 
 {-

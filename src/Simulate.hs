@@ -1,7 +1,6 @@
 module Simulate where
 
-import Actor.Map
-
+import Actor
 import Dungeon
 import GameState
 import Player

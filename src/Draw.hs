@@ -1,7 +1,6 @@
 module Draw where
 
-import Actor.Map
-
+import Actor
 import Box
 import Canvas
 import Cursor
@@ -11,7 +10,8 @@ import Terrain
 import Time
 import Turn
 
-import Actor
+import Entity.Map
+
 import UI.HSCurses.Curses (refresh, update)
 
 draw :: Time -> GameState -> IO ()
@@ -33,7 +33,7 @@ draw tm (GameState am dgn now) = do
                 asGlyph = case D.get dgn p of
                             Just (g, _) -> (renderTile g, isVis)
                             Nothing -> (' ', isVis)
-                mob = actorAt am in
+                mob = entityAt am in
               if not isVis
               then asGlyph
               else case mob p of

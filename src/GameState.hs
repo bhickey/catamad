@@ -8,8 +8,6 @@ module GameState (
   newLevel) where
 
 import Actor
-import Actor.Map (ActorMap)
-import qualified Actor.Map as AM
 import Dungeon
 import Point
 import Time
@@ -19,6 +17,8 @@ import Terrain
 import Schedule (Schedule)
 import qualified Schedule as S
 
+import Entity.Map (EntityMap)
+import qualified Entity.Map as EM
 import Data.Maybe (fromJust)
 
 type TimedEvent = (Time, GameEvent)
@@ -30,7 +30,7 @@ data GameEvent =
 type GameSchedule = Schedule GameEvent
 
 data GameState = GameState
-  { actorMap :: ActorMap
+  { actorMap :: EntityMap Actor
   , levelBasis :: Dungeon Terrain
   , levelTurn :: Turn }
 
@@ -38,13 +38,13 @@ initialSchedule :: GameSchedule
 initialSchedule = S.singleton timeZero PlayerEvent
 
 initialState :: GameState
-initialState = GameState (fromJust $ AM.fromList [(Actor PlayerId '@', zeroPoint)])
+initialState = GameState (fromJust $ EM.fromList [(Actor PlayerId '@', zeroPoint)])
                        (circularRoom zeroPoint)
                        firstTurn
 
 newLevel :: Point -> Time -> GameEvent -> GameState -> (GameState, GameSchedule)
 newLevel p t g (GameState _ _ turn) =
-  (GameState (fromJust $ AM.fromList [(Actor PlayerId '@', zeroPoint)])
+  (GameState (fromJust $ EM.fromList [(Actor PlayerId '@', zeroPoint)])
              (circularRoom p)
              (nextTurn turn),
   S.singleton t g)
