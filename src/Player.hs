@@ -2,7 +2,7 @@ module Player where
 
 import Action
 import Actor
-import Dungeon
+import qualified Dungeon as D
 import GameState
 import Keyboard
 import Point
@@ -30,7 +30,7 @@ runAction :: Action -> GameState -> StdGen -> Maybe (GameState, Maybe TimedEvent
 runAction (MoveAttack dir) (GameState am dungeon turn) _ =
   let pt = snd $ getPlayer am
       pt' = move pt dir in
-    if traversable $! (unconditionalGet dungeon pt')
+    if traversable $! D.get dungeon pt'
     then Just (GameState (fromJust $ moveEntity am player pt') dungeon (nextTurn turn), Just (mkTime 100, PlayerEvent))
     else Nothing
 

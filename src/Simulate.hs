@@ -4,12 +4,13 @@ import Actor
 import Dungeon
 import GameState
 import Player
+import Point
 import Schedule --(getEvent, addEvent, Event(..), time)
 import Draw (draw)
 import FOV
 import Time
 
-import Data.Set (elems)
+import Data.Set (Set, elems)
 
 import System.Random
 
@@ -31,19 +32,19 @@ updateSchedule (Just (t, e)) s = addEvent t e s
 
 runEvent :: Time -> GameEvent -> GameState -> IO (GameState, Maybe TimedEvent)
 runEvent _ (MonsterEvent act) gs = return $ act gs
-runEvent t PlayerEvent gs = do
-	gs' <- showDungeon t gs
+runEvent _ PlayerEvent gs = do
+	gs' <- showDungeon gs
 	gen <- getStdGen
 	repl gs' gen
 
-showDungeon :: Time -> GameState -> IO GameState 
-showDungeon t gs = do
-  let gs' = applyFov gs in
-    draw t gs' >> return gs'
+showDungeon :: GameState -> IO GameState 
+showDungeon gs = do
+  let (gs', pts) = applyFov gs in
+    draw pts gs' >> return gs'
 
-applyFov :: GameState -> GameState
+applyFov :: GameState -> (GameState, Set Point)
 applyFov (GameState am d t) =
   let p = snd $ getPlayer am
       pts = doFov p d
-      d' = realizePoints t d (elems pts) in
-    GameState am d' t
+      d' = realizePoints d (elems pts) in
+    (GameState am d' t, pts)
