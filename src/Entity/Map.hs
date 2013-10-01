@@ -43,8 +43,8 @@ fromList = foldM addEntity empty
 
 rmEntity :: (Identifiable a) =>
   EntityMap a
-  -> a ->
-  Maybe (EntityMap a)
+  -> a
+  -> Maybe (EntityMap a)
 rmEntity (EntityMap p2e e2p em) entity =
   if M.notMember id em
   then Nothing
@@ -54,6 +54,13 @@ rmEntity (EntityMap p2e e2p em) entity =
          (M.delete id em)
     where id = mkIdentifier entity
 
+updateEntity :: (Identifiable a) =>
+  EntityMap a
+  -> a
+  -> EntityMap a
+updateEntity (EntityMap p2e e2p em) entity =
+  EntityMap p2e e2p (M.insert id entity em)
+  where id = mkIdentifier entity
 entityAt :: (Identifiable a) =>
   EntityMap a
   -> Point

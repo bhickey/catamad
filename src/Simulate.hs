@@ -10,6 +10,8 @@ import Draw (draw)
 import FOV
 import Time
 
+import Entity.Map (updateEntity)
+
 import Data.Set (Set, elems)
 
 import System.Random
@@ -44,7 +46,10 @@ showDungeon gs = do
 
 applyFov :: GameState -> (GameState, Set Point)
 applyFov (GameState am d t) =
-  let p = snd $ getPlayer am
-      pts = doFov p d
-      d' = realizePoints d (elems pts) in
-    (GameState am d' t, pts)
+  let d' = realizePoints d (elems pts) in
+    (GameState am' d' t, pts)
+  where p = snd $ getPlayer am
+        pts = doFov p d
+        info = map (\ x -> (x, get d x)) (elems pts)
+        actor = teach (fst $ getPlayer am) info
+        am' = updateEntity am actor

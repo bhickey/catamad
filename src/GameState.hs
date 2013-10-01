@@ -8,6 +8,7 @@ module GameState (
   newLevel) where
 
 import Actor
+import qualified Knowledge as K
 import Dungeon
 import Point
 import Time
@@ -38,13 +39,13 @@ initialSchedule :: GameSchedule
 initialSchedule = S.singleton timeZero PlayerEvent
 
 initialState :: GameState
-initialState = GameState (fromJust $ EM.fromList [(Actor PlayerId '@', zeroPoint)])
+initialState = GameState (fromJust $ EM.fromList [(Actor PlayerId '@' K.empty, zeroPoint)])
                        (circularRoom zeroPoint)
                        firstTurn
 
 newLevel :: Point -> Time -> GameEvent -> GameState -> (GameState, GameSchedule)
 newLevel p t g (GameState _ _ turn) =
-  (GameState (fromJust $ EM.fromList [(Actor PlayerId '@', zeroPoint)])
+  (GameState (fromJust $ EM.fromList [(Actor PlayerId '@' K.empty, zeroPoint)])
              (circularRoom p)
              (nextTurn turn),
   S.singleton t g)
