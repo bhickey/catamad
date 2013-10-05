@@ -2,12 +2,14 @@ module Action where
 
 import Direction
 
-data Action =
+type Action = Either GameAction ActorAction
+
+data GameAction = SaveGame
+data ActorAction =
     Attack Direction
   | Move Direction
   | MoveAttack Direction
   | UseStairs
   | Wait
-  | Quit
   | NoAction
   deriving (Eq, Show)

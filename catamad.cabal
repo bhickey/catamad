@@ -21,7 +21,7 @@ Executable catamad
                   vector >= 0.7.1,
                   MissingH >= 1.1.0.3
   Main-Is:        Main.hs
-  GHC-Options:    -Wall 
+  GHC-Options:    -Wall
                   -Werror
                   -O3
   Hs-Source-Dirs: src

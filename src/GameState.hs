@@ -3,10 +3,12 @@ module GameState (
   GameState(..),
   GameEvent(MonsterEvent, PlayerEvent),
   TimedEvent,
+  ActionResult,
   initialState,
   initialSchedule,
   newLevel) where
 
+import Action
 import Actor
 import qualified Knowledge as K
 import Dungeon
@@ -24,8 +26,11 @@ import Data.Maybe (fromJust)
 
 type TimedEvent = (Time, GameEvent)
 
+type GameUpdate = (GameState, Maybe TimedEvent)
+type ActionResult = Either GameUpdate GameAction
+
 data GameEvent =
-    MonsterEvent (GameState -> (GameState, Maybe TimedEvent))
+    MonsterEvent (GameState -> GameUpdate)
   | PlayerEvent
 
 type GameSchedule = Schedule GameEvent
@@ -43,9 +48,8 @@ initialState = GameState (fromJust $ EM.fromList [(Actor PlayerId '@' K.empty, z
                        (circularRoom zeroPoint)
                        firstTurn
 
-newLevel :: Point -> Time -> GameEvent -> GameState -> (GameState, GameSchedule)
-newLevel p t g (GameState _ _ turn) =
-  (GameState (fromJust $ EM.fromList [(Actor PlayerId '@' K.empty, zeroPoint)])
-             (circularRoom p)
-             (nextTurn turn),
-  S.singleton t g)
+newLevel :: Point -> GameState -> GameState
+newLevel p (GameState _ _ turn) =
+  GameState (fromJust $ EM.fromList [(Actor PlayerId '@' K.empty, zeroPoint)])
+            (circularRoom p)
+            (nextTurn turn)

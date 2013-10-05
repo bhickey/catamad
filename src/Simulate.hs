@@ -25,18 +25,20 @@ simulation_loop schedule@(Schedule t _) game = do
   case getEvent $ schedule of
     Nothing -> return ()
     Just ((Event _ act), s) -> do
-      (game', maybeEvent) <- runEvent t act game
-      simulation_loop (updateSchedule maybeEvent s) game'
+      result <- runEvent t act game
+      case result of
+        Left (game', maybeEvent) -> simulation_loop (updateSchedule maybeEvent s) game'
+        Right _ -> return () -- Don't do anything with game actions yet.
 
 updateSchedule :: Maybe TimedEvent -> GameSchedule -> GameSchedule
 updateSchedule Nothing s = s
 updateSchedule (Just (t, e)) s = addEvent t e s
 
-runEvent :: Time -> GameEvent -> GameState -> IO (GameState, Maybe TimedEvent)
-runEvent _ (MonsterEvent act) gs = return $ act gs
+runEvent :: Time -> GameEvent -> GameState -> IO ActionResult
+runEvent _ (MonsterEvent act) gs = return $ Left $ act gs
 runEvent _ PlayerEvent gs = do
 	gs' <- showDungeon gs
-	gen <- getStdGen
+	gen <- newStdGen
 	repl gs' gen
 
 showDungeon :: GameState -> IO GameState 

@@ -9,18 +9,18 @@ import Direction
 type KeyboardMap a = Map Char a
 
 getAction :: KeyboardMap Action -> Char -> Action
-getAction m k = M.findWithDefault NoAction k m
+getAction m k = M.findWithDefault (Right NoAction) k m
 
 defaultKeymap :: KeyboardMap Action
 defaultKeymap = M.fromList $
-  [('y', MoveAttack NorthWest),
-   ('k', MoveAttack North),
-   ('u', MoveAttack NorthEast),
-   ('l', MoveAttack East),
-   ('n', MoveAttack SouthEast),
-   ('j', MoveAttack South),
-   ('b', MoveAttack SouthWest),
-   ('h', MoveAttack West),
-   ('>', UseStairs),
-   ('.', Wait),
-   ('q', Quit)]
+  [('y', Right $ MoveAttack NorthWest),
+   ('k', Right $ MoveAttack North),
+   ('u', Right $ MoveAttack NorthEast),
+   ('l', Right $ MoveAttack East),
+   ('n', Right $ MoveAttack SouthEast),
+   ('j', Right $ MoveAttack South),
+   ('b', Right $ MoveAttack SouthWest),
+   ('h', Right $ MoveAttack West),
+   ('>', Right $ UseStairs),
+   ('.', Right $ Wait),
+   ('q', Left $ SaveGame)]
