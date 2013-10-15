@@ -76,6 +76,9 @@ move (Point (x,y)) SouthWest = Point (x - 1, y + 1)
 move (Point (x,y)) West = Point (x - 1, y)
 move (Point (x,y)) NorthWest = Point (x - 1, y - 1)
 
+neighbors :: Point -> [Point]
+neighbors p = map (move p) [North .. NorthWest]   
+
 -- TODO: Write this concisely.
 directionTo :: Point -> Point -> Maybe Direction
 directionTo (Point (a, b)) (Point (c, d)) =
