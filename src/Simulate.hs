@@ -5,7 +5,7 @@ import Dungeon
 import GameState
 import Player
 import Point
-import Schedule --(getEvent, addEvent, Event(..), time)
+import Schedule
 import Draw (draw)
 import FOV
 import Time

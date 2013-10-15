@@ -12,6 +12,7 @@ import Action
 import Actor
 import qualified Belief as B
 import Dungeon
+import Health
 import qualified Knowledge as K
 import Point
 import Time
@@ -43,8 +44,8 @@ data GameState = GameState
 
 actors :: [(Actor, Point)]
 actors =
-  [(Actor PlayerId '@' K.empty B.empty, zeroPoint)
-  ,(Actor (MonsterId 1) 'b' K.empty B.empty, Point (3,3))]
+  [(Actor PlayerId '@' K.empty B.empty (mkHealth 10 10), zeroPoint)
+  ,(Actor (MonsterId 1) 'b' K.empty B.empty (mkHealth 1 1), Point (3,3))]
 
 initialSchedule :: GameSchedule
 initialSchedule = S.singleton timeZero PlayerEvent

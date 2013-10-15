@@ -75,3 +75,24 @@ move (Point (x,y)) South = Point (x, y + 1)
 move (Point (x,y)) SouthWest = Point (x - 1, y + 1)
 move (Point (x,y)) West = Point (x - 1, y)
 move (Point (x,y)) NorthWest = Point (x - 1, y - 1)
+
+-- TODO: Write this concisely.
+directionTo :: Point -> Point -> Maybe Direction
+directionTo (Point (a, b)) (Point (c, d)) =
+  if (a < c)
+  then if (b < d)
+       then Just NorthEast
+       else if (b > d)
+            then Just NorthWest
+            else Just North
+  else if (a > c)
+       then if (b < d)
+            then Just SouthEast
+            else if (b > d)
+                 then Just SouthWest
+                 else Just South
+        else if (b < d)
+             then Just East
+             else if (b > d)
+                  then Just West
+                  else Nothing

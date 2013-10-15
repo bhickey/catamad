@@ -25,16 +25,16 @@ draw pts (GameState am dgn now) = do
     print_string 0 0 (show now) >>
     refresh >> update >>
     return ()
-    where (Actor _ _ knowledge _) = fst $ getPlayer am
-          renderFn p =
-            let isVis = member p pts
-                known = isKnown knowledge p
-                asGlyph = (renderTile $ D.get dgn p, isVis)
-                mob = entityAt am in
-              if not isVis
-              then if known 
-                   then asGlyph
-                   else (' ', False)
-              else case mob p of
-                     Nothing -> asGlyph
-                     Just a -> (glyph a, True)
+  where knowledge = actorKnow $ fst $ getPlayer am
+        renderFn p =
+          let isVis = member p pts
+              known = isKnown knowledge p
+              asGlyph = (renderTile $ D.get dgn p, isVis)
+              mob = entityAt am in
+            if not isVis
+            then if known 
+                 then asGlyph
+                 else (' ', False)
+            else case mob p of
+                   Nothing -> asGlyph
+                   Just a -> (glyph a, True)
