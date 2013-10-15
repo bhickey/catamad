@@ -9,6 +9,10 @@ data Beliefs a = Beliefs
   (Map Point (Identifier a))
   (Map (Identifier a) Point)
 
+empty :: (Identifiable a) =>
+  Beliefs a
+empty = Beliefs M.empty M.empty
+
 get :: (Identifiable a) =>
   Beliefs a ->
   Point ->

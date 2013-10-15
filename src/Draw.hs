@@ -25,7 +25,7 @@ draw pts (GameState am dgn now) = do
     print_string 0 0 (show now) >>
     refresh >> update >>
     return ()
-    where (Actor _ _ knowledge) = fst $ getPlayer am
+    where (Actor _ _ knowledge _) = fst $ getPlayer am
           renderFn p =
             let isVis = member p pts
                 known = isKnown knowledge p
