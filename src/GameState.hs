@@ -41,17 +41,22 @@ data GameState = GameState
   , levelBasis :: Dungeon Terrain
   , levelTurn :: Turn }
 
+actors :: [(Actor, Point)]
+actors =
+  [(Actor PlayerId '@' K.empty B.empty, zeroPoint)
+  ,(Actor (MonsterId 1) 'b' K.empty B.empty, Point (3,3))]
+
 initialSchedule :: GameSchedule
 initialSchedule = S.singleton timeZero PlayerEvent
 
 initialState :: GameState
 initialState = GameState
-  (fromJust $ EM.fromList [(Actor PlayerId '@' K.empty B.empty, zeroPoint)])
+  (fromJust $ EM.fromList actors)
   (circularRoom zeroPoint)
   firstTurn
 
 newLevel :: Point -> GameState -> GameState
 newLevel p (GameState _ _ turn) = GameState
-  (fromJust $ EM.fromList [(Actor PlayerId '@' K.empty B.empty, zeroPoint)])
+  (fromJust $ EM.fromList actors)
   (circularRoom p)
   (nextTurn turn)

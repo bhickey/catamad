@@ -28,13 +28,33 @@ runAction (Left act) _ _ = Just (Right act)
 runAction (Right act) gs rng = runActorAction act gs rng
 
 runActorAction :: ActorAction -> GameState -> StdGen -> Maybe ActionResult
-runActorAction (MoveAttack dir) (GameState am dungeon turn) _ =
-  let pt = snd $ getPlayer am
-      pt' = move pt dir in
-    if traversable $! D.get dungeon pt'
-    then Just $
-      Left $ (GameState (fromJust $ moveEntity am player pt') dungeon (nextTurn turn), Just (mkTime 100, PlayerEvent))
-    else Nothing
+runActorAction (MoveAttack dir) gs@(GameState am dungeon turn) gen =
+  if hasMob
+  then runActorAction (Attack dir) gs gen
+  else if traversable $! D.get dungeon pt'
+       then Just $ Left $
+         (GameState
+           (fromJust $ moveEntity am player pt')
+           dungeon (nextTurn turn),
+         Just (mkTime 100, PlayerEvent))
+       else Nothing
+  where pt = snd $ getPlayer am
+        pt' = move pt dir
+        hasMob = hasEntityAt am pt'
+
+runActorAction (Attack dir) gs _ =
+  case mob of
+    Nothing -> Nothing
+    Just m -> Just $ Left $
+      (GameState
+        (fromJust $ rmEntity am m)
+        (levelBasis gs)
+        (nextTurn $ levelTurn gs),
+      Just (mkTime 100, PlayerEvent))
+  where am = actorMap gs
+        pt = snd $ getPlayer am
+        pt' = move pt dir
+        mob = entityAt am pt'
 
 runActorAction UseStairs gs gen =
   if isStairs $ D.get dungeon pt

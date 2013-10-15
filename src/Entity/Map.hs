@@ -1,4 +1,16 @@
-module Entity.Map where
+module Entity.Map (
+  EntityMap,
+  addEntity,
+  entityAt,
+  empty,
+  fromList,
+  get,
+  hasEntity,
+  hasEntityAt,
+  rmEntity,
+  updateEntity,
+  moveEntity)
+where
 
 import Prelude hiding (id)
 
@@ -41,6 +53,18 @@ fromList :: (Identifiable a) =>
   -> Maybe (EntityMap a)
 fromList = foldM addEntity empty 
 
+hasEntity :: (Identifiable a) =>
+  EntityMap a
+  -> Identifier a
+  -> Bool
+hasEntity (EntityMap _ _ m) id = M.member id m 
+
+hasEntityAt :: (Identifiable a) =>
+  EntityMap a
+  -> Point
+  -> Bool
+hasEntityAt (EntityMap p _ _) pt = M.member pt p
+
 rmEntity :: (Identifiable a) =>
   EntityMap a
   -> a
@@ -61,6 +85,7 @@ updateEntity :: (Identifiable a) =>
 updateEntity (EntityMap p2e e2p em) entity =
   EntityMap p2e e2p (M.insert id entity em)
   where id = mkIdentifier entity
+
 entityAt :: (Identifiable a) =>
   EntityMap a
   -> Point
